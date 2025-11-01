@@ -51,11 +51,9 @@ public class MainActivity extends AppCompatActivity {
 
     private FrameLayout loadingOverlay;
 
-    private LinearLayout buttonOCR, buttonViewPrescription, buttonBloodMenu, buttonAllAlarmList, buttonChatBot;
+    private LinearLayout buttonOCR, buttonViewPrescription, buttonBloodMenu, buttonAllAlarmList, buttonChatBot, buttonMedSearch; // buttonMedSearch는 약품 성분 조회 api 테스트용
 
-    private MedicationSliderAdapter adapter; //의약품 슬라이더에 사용할 어댑터
-
-    private boolean DB1OK, DB2OK; //데이터베이스 로딩 끝났는지 판별을 위한 불린 자료형
+    private boolean DBOK; //데이터베이스 로딩 끝났는지 판별을 위한 불린 자료형
     
     private int infocount = 0; //의약품 정보 몇개 저장했는지 확인용
 
@@ -78,36 +76,10 @@ public class MainActivity extends AppCompatActivity {
 
         medicineNameRepository = new MedicineNameRepository(getApplication());
 
-        DB1OK = false;
-        DB2OK = false;
+        DBOK = false;
 
-        // 약품 정보 데이터베이스 초기화
-        initializeMedicineDatabase();
         // 자동완성을 위한 의약품 이름 목록 데이터베이스 초기화
         MakeNameList();
-
-        ViewPager2 medicationSlider = findViewById(R.id.medicationSlider);
-        medicationSlider.setOffscreenPageLimit(3); //미리 로딩해둘 페이지 개수 3개로 지정
-
-        reloadPage(); // 의약품 페이지 생성 메서드
-
-        new Thread(() -> {
-            // 자동 슬라이드 (5초마다 다음 페이지로 전환)
-            Handler handler = new Handler(Looper.getMainLooper());
-            Runnable autoSlideRunnable = new Runnable() {
-                int currentPage = 0;
-
-                @Override
-                public void run() {
-                    if (adapter.getItemCount() > 0) {
-                        currentPage = (currentPage + 1) % adapter.getItemCount();
-                        medicationSlider.setCurrentItem(currentPage, true);
-                    }
-                    handler.postDelayed(this, 5000); //5초
-                }
-            };
-            handler.postDelayed(autoSlideRunnable, 5000);
-        }).start();
 
 
         //UI 요소 찾기
@@ -117,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
         buttonBloodMenu = findViewById(R.id.button_BloodMenu);
         buttonAllAlarmList = findViewById(R.id.button_AllAlarmList);
         buttonChatBot = findViewById(R.id.button_ChatBot);
+        buttonMedSearch = findViewById(R.id.button_search_test);// 약품 성분 조회 api 테스트용
 
         loadingOverlay.setVisibility(View.VISIBLE); // 데이터베이스 초기화 작업 완료까지 보여줄 로딩 바
 
@@ -159,144 +132,19 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-    }
 
-    public void onResume() {
-        super.onResume();
-        reloadPage();
-    }
-
-    private void reloadPage() {
-        ViewPager2 medicationSlider = findViewById(R.id.medicationSlider);
-        new Thread(() -> {
-            // 복용 기간이 지나지 않은 처방전 중, 가장 오래된 처방전 조회
-            Prescription oldest = prescriptionRepository.getOldestActivePrescription();
-            medications.clear();
-            if (oldest == null) {
-                // 복용 중인 처방전이 없는 경우, 표시될 페이지를 위한 가짜 medications 리스트
-                Medication dummy = new Medication();
-                dummy.setName("복용 중인 처방전이 없습니다");
-                dummy.setEffects("");
-                medications.add(dummy);
+        buttonMedSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, MedSearchActivity.class);
+                startActivity(intent);
             }
-            else {
-                List<Prescription_View> prescriptionViews = prescription_viewRepository.getMedicationsForPrescription(oldest.getId());
-                for (Prescription_View pv : prescriptionViews) {
-                    Medication medication = medicationRepository.getMedicationById(pv.getMedication_id());
-                    if (medication != null) {
-                        medications.add(medication);
-                    }
-                }
-            }
-            runOnUiThread(() -> {
-                adapter = new MedicationSliderAdapter(medications);
-                medicationSlider.setAdapter(adapter);
-            });
-        }).start();
+        });
     }
-
 
     public void onBackPressed() {
         super.onBackPressed();
         finishAffinity(); // 모든 액티비티 종료
-    }
-
-    private void initializeMedicineDatabase() {
-
-        medicineTableRepository = new MedicineTableRepository(getApplication());
-
-        new Thread(() -> {
-            try {
-                List<MedicineTable> existingData = medicineTableRepository.getAllMedicineTables();
-                if (existingData != null && !existingData.isEmpty()) {
-                    Log.i(TAG, "약품 데이터가 이미 존재합니다. 초기화 스킵");
-                    DB1OK = true;
-                    checkLoadingDone();
-                    runOnUiThread(() -> Toast.makeText(this, "데이터베이스 준비 완료", Toast.LENGTH_SHORT).show());
-                    return; // 데이터가 존재하면 초기화 안 함
-                }
-
-//                if (existingData != null && !existingData.isEmpty()) {
-//                    medicineTableRepository.deleteAllMedicineTables();
-//                    Log.i(TAG, "약품 데이터 삭제");
-//
-//                }
-                //데이터베이스 업데이트에만 사용
-
-
-                String fileName = "medicine_info/약품 정보.txt";
-                InputStream inputStream = getAssets().open(fileName);
-
-                if (inputStream == null) {
-                    Log.e(TAG, "약품 정보 파일을 열 수 없습니다: " + fileName);
-                    runOnUiThread(() -> Toast.makeText(this, "약품 정보를 불러올 수 없습니다.", Toast.LENGTH_SHORT).show());
-                    return;
-                }
-
-                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-                String line;
-                String currentMedicine = null;
-                StringBuilder ingredient = new StringBuilder();
-                StringBuilder effect = new StringBuilder();
-                StringBuilder form = new StringBuilder();
-                StringBuilder precaution = new StringBuilder();
-                String currentSection = "";
-
-                while ((line = reader.readLine()) != null) {
-                    line = line.trim();
-                    if (line.isEmpty()) continue;
-
-                    if (line.startsWith("@")) { //의약품 정보 태그일 경우
-                        currentSection = line.substring(1).trim().replace(":", "");
-                    } else if (line.startsWith("#")) { //의약품 이름일 경우
-                        // 이전 약품 저장
-                        if (currentMedicine != null) {
-                            saveMedicineInfo(currentMedicine, ingredient.toString().trim(), effect.toString().trim(), form.toString().trim(), precaution.toString().trim());
-                        }
-                        currentMedicine = line.substring(1).trim();
-                        ingredient = new StringBuilder();
-                        effect = new StringBuilder();
-                        form = new StringBuilder();
-                        precaution = new StringBuilder();
-                        currentSection = "";
-                    } else {
-                        switch (currentSection) {
-                            case "성분":
-                                ingredient.append(line).append("\n");
-                                break;
-                            case "효과":
-                                effect.append(line).append("\n");
-                                break;
-                            case "제형":
-                                form.append(line).append("\n");
-                                break;
-                            case "주의사항":
-                                precaution.append(line).append("\n");
-                                break;
-                        }
-                    }
-                }
-
-                // 마지막 약품 정보 저장
-                if (currentMedicine != null) {
-                    saveMedicineInfo(currentMedicine,
-                        ingredient.toString().trim(),
-                        effect.toString().trim(),
-                        form.toString().trim(),
-                        precaution.toString().trim());
-                }
-
-                Log.i(TAG, "약품 정보 데이터베이스 초기화 완료");
-                runOnUiThread(() -> Toast.makeText(this, "약품 정보 데이터베이스가 생성되었습니다.", Toast.LENGTH_SHORT).show());
-                DB1OK = true;
-                checkLoadingDone();
-
-            } catch (IOException e) {
-                Log.e(TAG, "약품 정보 파일 로드 실패", e);
-                runOnUiThread(() -> Toast.makeText(this, "약품 정보 데이터베이스 초기화에 실패했습니다.", Toast.LENGTH_SHORT).show());
-                finish();
-            }
-        }).start();
     }
 
     private void saveMedicineInfo(String medicineName, String ingredient, String effect, String form, String precaution) {
@@ -342,14 +190,14 @@ public class MainActivity extends AppCompatActivity {
             nameListCheck = medicineNameRepository.getAllMedicineNames();
             if(nameListCheck != null && !nameListCheck.isEmpty()){
                 Log.d(TAG, "자동완성 데이터베이스가 이미 생성됨.");
-                runOnUiThread(() -> Toast.makeText(this, "데이터베이스2 준비 완료", Toast.LENGTH_SHORT).show());
-                DB2OK = true;
+                runOnUiThread(() -> Toast.makeText(this, "자동 완성 데이터베이스 준비 완료", Toast.LENGTH_SHORT).show());
+                DBOK = true;
                 checkLoadingDone();
                 return;
             }
             else {
                 try {
-                    String fileName = "건강보험심사평가원_ATC코드 매핑 목록_20240630.csv";
+                    String fileName = "약품명목록.csv";
                     InputStream inputStream = getAssets().open(fileName);
 
                     if (inputStream == null) {
@@ -381,7 +229,7 @@ public class MainActivity extends AppCompatActivity {
                     medicineNameRepository.insertAll(productNames);
                     Log.d(TAG, "데이터베이스 생성 완료");
                     runOnUiThread(() -> Toast.makeText(this, "자동완성 데이터베이스가 생성되었습니다.", Toast.LENGTH_SHORT).show());
-                    DB2OK = true;
+                    DBOK = true;
                     checkLoadingDone();
 
                     // 데이터베이스에 내용이 제대로 추가되었는지 확인하기 위한 디버깅용 코드
@@ -471,7 +319,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void checkLoadingDone() { //두 데이터베이스가 모두 초기화 되었는지 체크하기 위한 메서드
-        if (DB1OK && DB2OK) {
+        if (DBOK) {
             runOnUiThread(() -> {
                 loadingOverlay.setVisibility(View.GONE);
             });

@@ -15,7 +15,7 @@
             android:id="@+id/medicationName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="의약품 이름"
+            android:text="약품명"
             android:textColor="@color/text_highlight" />
 
         <AutoCompleteTextView
@@ -27,102 +27,6 @@
             android:inputType="text"
             android:textColor="@color/textPrimary"
             android:textColorHint="@color/textSecondary" />
-
-        <TextView
-            android:id="@+id/medicationDosage"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="투약량"
-            android:textColor="@color/text_highlight" />
-
-        <EditText
-            android:id="@+id/editmedicationDosage"
-            android:inputType="numberDecimal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="투약량을 입력하세요"
-            android:textColor="@color/textPrimary"
-            android:textColorHint="@color/textSecondary" />
-
-        <TextView
-            android:id="@+id/medicationFrequency"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="복용 횟수"
-            android:textColor="@color/text_highlight" />
-
-        <EditText
-            android:id="@+id/editmedicationFrequency"
-            android:inputType="numberDecimal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="일일 복용 횟수를 입력하세요"
-            android:textColor="@color/textPrimary"
-            android:textColorHint="@color/textSecondary" />
-
-        <!-- 성분 -->
-        <TextView
-            android:id="@+id/medicationIngredients"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="성분"
-            android:textColor="@color/text_highlight"
-            android:paddingBottom="5dp" />
-
-        <TextView
-            android:id="@+id/viewmedicationIngredients"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/textPrimary"
-            android:paddingBottom="5dp" />
-
-        <!-- 제형 -->
-        <TextView
-            android:id="@+id/medicationAppearance"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="제형"
-            android:textColor="@color/text_highlight"
-            android:paddingBottom="5dp" />
-
-        <TextView
-            android:id="@+id/viewmedicationAppearance"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/textPrimary"
-            android:paddingBottom="5dp" />
-
-        <!-- 효과 -->
-        <TextView
-            android:id="@+id/medicationEffects"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="효과"
-            android:textColor="@color/text_highlight"
-            android:paddingBottom="5dp" />
-
-        <TextView
-            android:id="@+id/viewmedicationEffects"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/textPrimary"
-            android:paddingBottom="5dp" />
-
-        <!-- 주의사항 -->
-        <TextView
-            android:id="@+id/medicationCaution"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="주의사항"
-            android:textColor="@color/text_highlight"
-            android:paddingBottom="5dp" />
-
-        <TextView
-            android:id="@+id/viewmedicationCaution"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/textPrimary"
-            android:paddingBottom="5dp" />
 
     </LinearLayout>
 </FrameLayout>

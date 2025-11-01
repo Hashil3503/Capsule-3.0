@@ -11,12 +11,12 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- 의약품 이름 -->
+        <!-- 약품명 itemName-->
         <TextView
             android:id="@+id/medicationName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="의약품 이름"
+            android:text="약품명"
             android:textColor="@color/text_highlight"
             android:paddingBottom="5dp" />
         <TextView
@@ -27,94 +27,94 @@
             android:textColor="@color/textPrimary"
             android:paddingBottom="5dp" />
 
-        <!-- 투약량 -->
+        <!-- 제조업체 entpName -->
         <TextView
-            android:id="@+id/medicationDosage"
+            android:id="@+id/medicationEntpName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="투약량"
+            android:text="제조업체"
             android:textColor="@color/text_highlight"
             android:paddingBottom="5dp" />
 
         <TextView
-            android:id="@+id/viewmedicationDosage"
+            android:id="@+id/viewmedicationEntpName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="투약량"
+            android:text="제조업체"
             android:textColor="@color/textPrimary"
             android:paddingBottom="5dp" />
 
-        <!-- 복용 횟수 -->
+        <!-- 품목기준코드 itemSeq -->
         <TextView
-            android:id="@+id/medicationFrequency"
+            android:id="@+id/medicationItemSeq"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="복용 횟수"
+            android:text="품목기준코드"
             android:textColor="@color/text_highlight"
             android:paddingBottom="5dp" />
 
         <TextView
-            android:id="@+id/viewmedicationFrequency"
+            android:id="@+id/viewmedicationItemSeq"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="복용 횟수"
+            android:text="품목기준코드"
             android:textColor="@color/textPrimary"
             android:paddingBottom="5dp" />
 
-        <!-- 성분 -->
+        <!-- 효능 efcyQesitm -->
         <TextView
-            android:id="@+id/medicationIngredients"
+            android:id="@+id/medicationEfcyQesitm"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="성분"
+            android:text="효능"
             android:textColor="@color/text_highlight"
             android:paddingBottom="5dp" />
 
         <TextView
-            android:id="@+id/viewmedicationIngredients"
+            android:id="@+id/viewmedicationEfcyQesitm"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="성분"
+            android:text="효능"
             android:textColor="@color/textPrimary"
             android:paddingBottom="5dp" />
 
-        <!-- 제형 -->
+        <!-- 사용 방법 useMethodQesitm -->
         <TextView
-            android:id="@+id/medicationAppearance"
+            android:id="@+id/medicationUseMethodQesitm"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="제형"
+            android:text="사용 방법"
             android:textColor="@color/text_highlight"
             android:paddingBottom="5dp" />
 
         <TextView
-            android:id="@+id/viewmedicationAppearance"
+            android:id="@+id/viewmedicationUseMethodQesitm"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="제형"
+            android:text="사용 방법"
             android:textColor="@color/textPrimary"
             android:paddingBottom="5dp" />
 
-        <!-- 효과 -->
+        <!-- 사용 전 경고 atpnWarnQesitm -->
         <TextView
-            android:id="@+id/medicationEffects"
+            android:id="@+id/medicationAtpnWarnQesitm"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="효과"
+            android:text="사용 전 경고"
             android:textColor="@color/text_highlight"
             android:paddingBottom="5dp" />
 
         <TextView
-            android:id="@+id/viewmedicationEffects"
+            android:id="@+id/viewmedicationAtpnWarnQesitm"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="효과"
+            android:text="사용 전 경고"
             android:textColor="@color/textPrimary"
             android:paddingBottom="5dp" />
 
-        <!-- 주의사항 -->
+        <!-- 주의사항 AtpnQesitm -->
         <TextView
-            android:id="@+id/medicationCaution"
+            android:id="@+id/medicationAtpnQesitm"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="주의사항"
@@ -122,33 +122,33 @@
             android:paddingBottom="5dp" />
 
         <TextView
-            android:id="@+id/viewmedicationCaution"
+            android:id="@+id/viewmedicationAtpnQesitm"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="주의사항"
             android:textColor="@color/textPrimary"
             android:paddingBottom="5dp" />
 
-        <!-- 메모 -->
+        <!-- 상호작용 IntrcQesitm -->
         <TextView
-            android:id="@+id/medicationMemo"
+            android:id="@+id/medicationIntrcQesitm"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="메모"
+            android:text="상호작용"
             android:textColor="@color/text_highlight"
             android:paddingBottom="5dp" />
 
         <TextView
-            android:id="@+id/viewmedicationMemo"
+            android:id="@+id/viewmedicationIntrcQesitm"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="메모"
+            android:text="상호작용"
             android:textColor="@color/textPrimary"
             android:paddingBottom="5dp" />
 
-        <!-- 부작용 -->
+        <!-- 부작용 SeQesitm -->
         <TextView
-            android:id="@+id/medicationSideeffect"
+            android:id="@+id/medicationSeQesitm"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="부작용"
@@ -156,27 +156,27 @@
             android:paddingBottom="5dp" />
 
         <TextView
-            android:id="@+id/viewmedicationSideeffect"
+            android:id="@+id/viewmedicationSeQesitm"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="부작용"
             android:textColor="@color/textPrimary"
             android:paddingBottom="5dp" />
 
-        <!-- 부작용 여부 -->
+        <!-- 보관 방법 DepositMethodQesitm -->
         <TextView
-            android:id="@+id/medicationSe_existence"
+            android:id="@+id/medicationDepositMethodQesitm"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="부작용 여부"
+            android:text="보관 방법"
             android:textColor="@color/text_highlight"
             android:paddingBottom="5dp" />
 
         <TextView
-            android:id="@+id/viewmedicationSe_existence"
+            android:id="@+id/viewmedicationDepositMethodQesitm"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="부작용 여부"
+            android:text="보관 방법"
             android:textColor="@color/textPrimary"
             android:paddingBottom="5dp" />
 
@@ -207,15 +207,6 @@
                 android:textColor="@color/textPrimary"
                 android:background="@drawable/rounded_button" />
 
-            <Button
-                android:id="@+id/memoButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginLeft="5dp"
-                android:text="메모"
-                android:textColor="@color/textPrimary"
-                android:background="@drawable/rounded_button" />
         </LinearLayout>
     </LinearLayout>
 </FrameLayout>

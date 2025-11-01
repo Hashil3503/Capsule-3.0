@@ -23,6 +23,16 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.gms.common.internal.service.Common;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -37,7 +47,6 @@ public class AddPrescriptionActivity extends AppCompatActivity {
     private PrescriptionRepository prescriptionRepository;
     private MedicationRepository medicationRepository;
     private Prescription_ViewRepository prescription_viewRepository;
-    private MedicineTableRepository medicineTableRepository;
     private MedicineNameRepository medicineNameRepository;
     private List<String> medicineNames = new ArrayList<>(); // 자동완성을 위한 리스트
     private List<MedicineName> nameList = new ArrayList<>(); // 자동완성을 위한 리스트 2
@@ -46,6 +55,8 @@ public class AddPrescriptionActivity extends AppCompatActivity {
     Calendar regDate;
 
     private ArrayAdapter<String> adapter; //전역 어댑터 선언
+
+    private String apiKey; //e약은요 apiKey
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,8 +67,9 @@ public class AddPrescriptionActivity extends AppCompatActivity {
         prescriptionRepository = new PrescriptionRepository(getApplication());
         medicationRepository = new MedicationRepository(getApplication());
         prescription_viewRepository = new Prescription_ViewRepository(getApplication());
-        medicineTableRepository = new MedicineTableRepository(getApplication());
         medicineNameRepository = new MedicineNameRepository(getApplication());
+
+        apiKey = getString(R.string.med_search_api_key); //e약은요 api 키 가져오기
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -90,10 +102,7 @@ public class AddPrescriptionActivity extends AppCompatActivity {
         if (ocrMedicineNames  != null && !ocrMedicineNames .isEmpty()) {
             for (String medicineName : ocrMedicineNames ) {
 
-                String norName = CommonMethod.normalizeWord(medicineName); //DB 조회를 위한 의약품 이름 정규화
-
                 new Thread(() -> {
-                    MedicineTable medicineTable = medicineTableRepository.getMedicationByName(norName);
 
                     runOnUiThread(() -> {
                         LayoutInflater inflater = LayoutInflater.from(AddPrescriptionActivity.this); //현재 Activity의 Context를 기반으로 LayoutInflater 객체를 생성.
@@ -103,61 +112,9 @@ public class AddPrescriptionActivity extends AppCompatActivity {
                         AutoCompleteTextView nameEditText = medicationFrame.findViewById(R.id.editmedicationName);
                         nameEditText.setAdapter(adapter);
                         nameEditText.setThreshold(1);
-                        nameEditText.addTextChangedListener(new TextWatcher() {
-                            @Override
-                            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                                // 입력 전 상태
-                            }
-
-                            @Override
-                            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                                // 입력 중 상태
-                            }
-
-                            @Override
-                            public void afterTextChanged(Editable s) {
-                                // 입력 완료 후 상태
-                                String inputName = s.toString().trim();
-                                String normalized = CommonMethod.normalizeWord(inputName);
-
-                                new Thread(() -> {
-                                    MedicineTable updatedMedicine = medicineTableRepository.getMedicationByName(normalized);
-                                    runOnUiThread(() -> {
-                                        TextView viewmedicationIngredients = medicationFrame.findViewById(R.id.viewmedicationIngredients);
-                                        TextView viewmedicationAppearance = medicationFrame.findViewById(R.id.viewmedicationAppearance);
-                                        TextView viewmedicationEffects = medicationFrame.findViewById(R.id.viewmedicationEffects);
-                                        TextView viewmedicationCaution = medicationFrame.findViewById(R.id.viewmedicationCaution);
-
-                                        if (updatedMedicine != null) {
-                                            viewmedicationIngredients.setText(updatedMedicine.getIngredients());
-                                            viewmedicationAppearance.setText(updatedMedicine.getAppearance());
-                                            viewmedicationEffects.setText(updatedMedicine.getEffects());
-                                            viewmedicationCaution.setText(updatedMedicine.getCaution());
-                                        } else {
-                                            // 찾는 약품 없을 때는 모두 초기화
-                                            viewmedicationIngredients.setText("");
-                                            viewmedicationAppearance.setText("");
-                                            viewmedicationEffects.setText("");
-                                            viewmedicationCaution.setText("");
-                                        }
-                                    });
-                                }).start();
-                            }
-                        });
-
-                        TextView viewmedicationIngredients = medicationFrame.findViewById(R.id.viewmedicationIngredients);
-                        TextView viewmedicationAppearance = medicationFrame.findViewById(R.id.viewmedicationAppearance);
-                        TextView viewmedicationEffects = medicationFrame.findViewById(R.id.viewmedicationEffects);
-                        TextView viewmedicationCaution = medicationFrame.findViewById(R.id.viewmedicationCaution);
-
-                        if (medicineTable != null) {
-                            nameEditText.setText(medicineName);
-                            viewmedicationIngredients.setText(medicineTable.getIngredients());
-                            viewmedicationAppearance.setText(medicineTable.getAppearance());
-                            viewmedicationEffects.setText(medicineTable.getEffects());
-                            viewmedicationCaution.setText(medicineTable.getCaution());
-                        }
+                        nameEditText.setText(medicineName);
                     });
+
                 }).start();
 
 //                // 스크롤이 자동으로 아래로 이동하도록 설정 (이제 필요 없음)
@@ -187,47 +144,6 @@ public class AddPrescriptionActivity extends AppCompatActivity {
                 AutoCompleteTextView nameEditText = medicationFrame.findViewById(R.id.editmedicationName);
                 nameEditText.setAdapter(adapter); //어댑터 연결
                 nameEditText.setThreshold(1); // 1글자 입력 시 자동완성 시작
-                nameEditText.addTextChangedListener(new TextWatcher() {
-                    @Override
-                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                        // 입력 전 상태
-                    }
-
-                    @Override
-                    public void onTextChanged(CharSequence s, int start, int before, int count) {
-                        // 입력 중 상태
-                    }
-
-                    @Override
-                    public void afterTextChanged(Editable s) {
-                        // 입력 완료 후 상태
-                        String inputName = s.toString().trim();
-                        String normalized = CommonMethod.normalizeWord(inputName);
-
-                        new Thread(() -> {
-                            MedicineTable updatedMedicine = medicineTableRepository.getMedicationByName(normalized);
-                            runOnUiThread(() -> {
-                                TextView viewmedicationIngredients = medicationFrame.findViewById(R.id.viewmedicationIngredients);
-                                TextView viewmedicationAppearance = medicationFrame.findViewById(R.id.viewmedicationAppearance);
-                                TextView viewmedicationEffects = medicationFrame.findViewById(R.id.viewmedicationEffects);
-                                TextView viewmedicationCaution = medicationFrame.findViewById(R.id.viewmedicationCaution);
-
-                                if (updatedMedicine != null) {
-                                    viewmedicationIngredients.setText(updatedMedicine.getIngredients());
-                                    viewmedicationAppearance.setText(updatedMedicine.getAppearance());
-                                    viewmedicationEffects.setText(updatedMedicine.getEffects());
-                                    viewmedicationCaution.setText(updatedMedicine.getCaution());
-                                } else {
-                                    // 찾는 약품 없을 때는 모두 초기화
-                                    viewmedicationIngredients.setText("");
-                                    viewmedicationAppearance.setText("");
-                                    viewmedicationEffects.setText("");
-                                    viewmedicationCaution.setText("");
-                                }
-                            });
-                        }).start();
-                    }
-                });
 
 
                 // 스크롤이 자동으로 아래로 이동하도록 설정
@@ -268,67 +184,44 @@ public class AddPrescriptionActivity extends AppCompatActivity {
                 LinearLayout medicationContainer = findViewById(R.id.medicationContainer);
                 int count = medicationContainer.getChildCount(); //동적으로 생성된 medication_frame의 갯수
 
-                List<Medication> validMedications = new ArrayList<>(); //이름이 비어있지 않은 의약품만 필터링 하기 위한 리스트
+                new Thread(() -> {
+                    List<Medication> validMedications = new ArrayList<>();
 
-                for (int i = 0; i < count; i++) {
-                    View frame = medicationContainer.getChildAt(i);
-                    AutoCompleteTextView nameEditText = frame.findViewById(R.id.editmedicationName);
-                    EditText dosageEditText = frame.findViewById(R.id.editmedicationDosage);
-                    EditText frequencyEditText = frame.findViewById(R.id.editmedicationFrequency);
-                    TextView viewmedicationIngredients = frame.findViewById(R.id.viewmedicationIngredients);
-                    TextView viewmedicationAppearance = frame.findViewById(R.id.viewmedicationAppearance);
-                    TextView viewmedicationEffects = frame.findViewById(R.id.viewmedicationEffects);
-                    TextView viewmedicationCaution = frame.findViewById(R.id.viewmedicationCaution);
+                    for (int i = 0; i < medicationContainer.getChildCount(); i++) {
+                        View frame = medicationContainer.getChildAt(i);
+                        AutoCompleteTextView nameEditText = frame.findViewById(R.id.editmedicationName);
+                        String name = nameEditText.getText().toString().trim();
 
-                    String name = nameEditText.getText().toString().trim();
-                    if (name.isEmpty()) {
-                        Toast.makeText(AddPrescriptionActivity.this, "빈 의약품 이름이 있습니다", Toast.LENGTH_SHORT).show();
-                        return;  //의약품 이름이 비면 반복문 자체를 종료?
+                        if (name.isEmpty()) {
+                            runOnUiThread(() -> Toast.makeText(AddPrescriptionActivity.this, "빈 의약품 이름이 있습니다", Toast.LENGTH_SHORT).show());
+                            return;
+                        }
+
+                        // 🔹 네트워크 호출을 백그라운드에서 수행
+                        Medication medication = CommonMethod.getDrugInfo(apiKey, name);
+                        if (medication != null) validMedications.add(medication);
                     }
 
-                    int dosage = CommonMethod.parseInteger(dosageEditText.getText().toString().trim());
-                    int frequency = CommonMethod.parseInteger(frequencyEditText.getText().toString().trim());
-                    String ingredients = viewmedicationIngredients.getText().toString();
-                    String appearance = viewmedicationAppearance.getText().toString();
-                    String effects = viewmedicationEffects.getText().toString();
-                    String caution = viewmedicationCaution.getText().toString();
+                    // 🔹 데이터베이스 삽입 (Room은 자체적으로 백그라운드 동작하긴 하지만 안전하게 Thread 유지)
+                    Date selectedDate = regDate.getTime();
+                    Prescription prescription = new Prescription(selectedDate);
+                    prescription.setDuration(CommonMethod.parseInteger(((EditText)findViewById(R.id.editDuration)).getText().toString()));
 
-                    Medication medication = new Medication();
-                    medication.setName(name);
-                    medication.setDosage(dosage);
-                    medication.setFrequency(frequency);
-                    medication.setIngredients(ingredients);
-                    medication.setAppearance(appearance);
-                    medication.setEffects(effects);
-                    medication.setCaution(caution);
-                    medication.setMemo(null);
-                    medication.setSideeffct(null);
-                    medication.setSe_existence(false);
+                    long prescriptionId = prescriptionRepository.insert(prescription);
 
-                    validMedications.add(medication); // 이름이 있는 약만 리스트에 추가
-                }
+                    for (Medication med : validMedications) {
+                        long medicationId = medicationRepository.insert(med);
+                        Prescription_View relation = new Prescription_View((int) prescriptionId, (int) medicationId);
+                        prescription_viewRepository.insert(relation);
+                    }
 
-                // 위 두 검사를 통과하면 처방전과 의약품 정보 저장.
-                Date selectedDate = regDate.getTime();
-                Prescription prescription = new Prescription(selectedDate);
-                prescription.setDuration(duration);
+                    runOnUiThread(() -> {
+                        Toast.makeText(AddPrescriptionActivity.this, "처방전이 등록되었습니다!", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(AddPrescriptionActivity.this, MainActivity.class));
+                        finish();
+                    });
 
-                long prescriptionId = prescriptionRepository.insert(prescription);
-
-                for (Medication med : validMedications) {
-                    long medicationId = medicationRepository.insert(med);
-                    Prescription_View relation = new Prescription_View((int) prescriptionId, (int) medicationId);
-                    prescription_viewRepository.insert(relation);
-                }
-                // UI 스레드에서 실행해야 할 작업만 남김
-                // runOnUiThread(() -> { ... }); 을 사용하지 않는 이유는 레파지터리를 통해 쿼리 작업만 백그라운드에서 동작하도록 했기 때문.
-                // 레파치터리가 없었으면 위에 쿼리 관련 코드들은 전부 new Thread()를 통해 새로운 스레드에서 작업해야함.
-                // 새로운 스레드는 백그라운드에서 동작해야 쿼리 작업중 앱이 멈춘는걸 방지할 수 있는데, 백그라운드 스레드에서 Toast를 사용하면 크래시 뜸.
-                // Toast는 일시적인 메시지를 띄워주는 기능을 수행하는데 UI관련 메서드이기 때문에 반드시 메인스레드(포어그라운드)에서 작동해야함.
-                Toast.makeText(AddPrescriptionActivity.this, "처방전이 등록되었습니다!", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(AddPrescriptionActivity.this, MainActivity.class);
-                startActivity(intent);
-                finish();
+                }).start();
             }
         });
 
@@ -350,33 +243,6 @@ public class AddPrescriptionActivity extends AppCompatActivity {
         }, year, month, day);
 
         dialog.show();
-    }
-    private String normalizeMedicineName(String name) {
-        if (name == null) return "";
-
-        // 1. 기본 정규화: 앞뒤 공백 제거
-        name = name.trim();
-
-        // 2. 괄호와 그 내용 제거
-        name = name.replaceAll("\\(.*?\\)", "").trim();
-
-        // 3. 언더스코어(_)와 그 이후 내용 제거
-        name = name.replaceAll("_.*$", "").trim();
-
-        // 4. 추가 공백 제거
-        name = name.replaceAll("\\s+", " ").trim();
-
-        // 5. 숫자 이후의 문자열 모두 제거
-        name = name.replaceAll("\\d.*$", "").trim();
-
-        // 6. 특수문자 제거 (한글, 영문만 남김)
-        name = name.replaceAll("[^가-힣a-zA-Z]", "").trim();
-
-        // 7. 마지막 언더스코어 제거
-        name = name.replaceAll("_$", "").trim();
-
-        Log.d(TAG, "정규화된 약품명: " + name);
-        return name;
     }
 
 }

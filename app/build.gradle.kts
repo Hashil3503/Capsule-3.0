@@ -16,6 +16,7 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         resValue("string", "openai_api_key", project.findProperty("OPENAI_API_KEY")?.toString() ?: "")
+        resValue("string", "med_search_api_key", project.findProperty("MED_SEARCH_API_KEY")?.toString() ?: "")
     }
 
     buildTypes {
@@ -93,4 +94,7 @@ dependencies {
 
     // RecyclerView
     implementation("androidx.recyclerview:recyclerview:1.3.2")
+
+    //json 관련 라이브러리
+    implementation ("org.json:json:20230227")
 }

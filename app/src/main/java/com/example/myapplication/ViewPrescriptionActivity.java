@@ -110,7 +110,7 @@ public class ViewPrescriptionActivity extends AppCompatActivity {
                         if (medicationNames.length() > 0) { // 이미 의약품 목록에 내용이 있는 경우에만 쉼표 추가.
                             medicationNames.append(", ");
                         }
-                        medicationNames.append(medication.getName()); //의약품 이름을 조회해 의약품 이름 문자열에 추가.
+                        medicationNames.append(medication.getItemName()); //의약품 이름을 조회해 의약품 이름 문자열에 추가.
                     }
                 }
                 //View 객체를 사용하는 이유는 중첩 for문으로 UI갱신이 너무 잦아질 수 있기 때문에 View 객체와 리스트를 사용해서 UI 변경점만 만들어두고 for문을 빠져나와서 일괄처리하기 위함.
