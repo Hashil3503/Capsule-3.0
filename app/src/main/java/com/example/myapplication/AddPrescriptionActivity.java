@@ -3,9 +3,6 @@ package com.example.myapplication;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -14,7 +11,6 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -23,22 +19,22 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.google.android.gms.common.internal.service.Common;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import java.lang.reflect.Type;
+
 
 public class AddPrescriptionActivity extends AppCompatActivity {
 
@@ -48,10 +44,12 @@ public class AddPrescriptionActivity extends AppCompatActivity {
     private MedicationRepository medicationRepository;
     private Prescription_ViewRepository prescription_viewRepository;
     private MedicineNameRepository medicineNameRepository;
+    private DefaultAlarmSetRepository defaultAlarmSetRepository; //알람 자동 설정을 위한 리파지터리
     private List<String> medicineNames = new ArrayList<>(); // 자동완성을 위한 리스트
     private List<MedicineName> nameList = new ArrayList<>(); // 자동완성을 위한 리스트 2
     private List<String> ocrMedicineNames = new ArrayList<>(); //ocr에서 추출한 의약품 이름을 담아두는 리스트
-
+    private long prescriptionId; //등록할 처방전 아이디
+    private List<AlarmItem> alarmList = new ArrayList<>();
     Calendar regDate;
 
     private ArrayAdapter<String> adapter; //전역 어댑터 선언
@@ -68,8 +66,11 @@ public class AddPrescriptionActivity extends AppCompatActivity {
         medicationRepository = new MedicationRepository(getApplication());
         prescription_viewRepository = new Prescription_ViewRepository(getApplication());
         medicineNameRepository = new MedicineNameRepository(getApplication());
+        defaultAlarmSetRepository = new DefaultAlarmSetRepository(getApplication());
 
         apiKey = getString(R.string.med_search_api_key); //e약은요 api 키 가져오기
+
+        loadAlarms();
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -207,13 +208,52 @@ public class AddPrescriptionActivity extends AppCompatActivity {
                     Prescription prescription = new Prescription(selectedDate);
                     prescription.setDuration(CommonMethod.parseInteger(((EditText)findViewById(R.id.editDuration)).getText().toString()));
 
-                    long prescriptionId = prescriptionRepository.insert(prescription);
+                    prescriptionId = prescriptionRepository.insert(prescription);
+
+                    // 🔹 자동 알람 설정 시작 (복용 일수 고려)
+                    List<DefaultAlarmSet> defaultAlarms = defaultAlarmSetRepository.getAll();
+                    int durationDays = prescription.getDuration();  // 복용 일수 가져오기
+
+                    if (defaultAlarms != null && !defaultAlarms.isEmpty()) {
+                        Calendar tempDate = (Calendar) regDate.clone();
+
+                        for (int day = 0; day < durationDays; day++) {
+                            for (DefaultAlarmSet alarm : defaultAlarms) {
+                                Calendar alarmTime = (Calendar) tempDate.clone();
+                                alarmTime.set(Calendar.HOUR_OF_DAY, alarm.getHour());
+                                alarmTime.set(Calendar.MINUTE, alarm.getMin());
+                                alarmTime.set(Calendar.SECOND, 0);
+                                alarmTime.set(Calendar.MILLISECOND, 0);
+
+                                // 과거 시간은 건너뛰기
+                                if (alarmTime.getTimeInMillis() <= System.currentTimeMillis()) continue;
+
+                                setAlarm(alarmTime);
+                            }
+                            // 하루씩 증가
+                            tempDate.add(Calendar.DATE, 1);
+                        }
+                        runOnUiThread(() ->
+                                Toast.makeText(AddPrescriptionActivity.this,
+                                        "알람이 자동으로 등록되었습니다.",
+                                        Toast.LENGTH_LONG).show()
+                        );
+                    }
+                    else {
+                        runOnUiThread(() ->
+                                Toast.makeText(AddPrescriptionActivity.this,
+                                        "기본 알람 시간이 설정되어 있지 않아 알람이 등록되지 않았습니다.",
+                                        Toast.LENGTH_LONG).show()
+                        );
+                    }
+
 
                     for (Medication med : validMedications) {
                         long medicationId = medicationRepository.insert(med);
                         Prescription_View relation = new Prescription_View((int) prescriptionId, (int) medicationId);
                         prescription_viewRepository.insert(relation);
                     }
+
 
                     runOnUiThread(() -> {
                         Toast.makeText(AddPrescriptionActivity.this, "처방전이 등록되었습니다!", Toast.LENGTH_SHORT).show();
@@ -244,6 +284,57 @@ public class AddPrescriptionActivity extends AppCompatActivity {
 
         dialog.show();
     }
+
+    private void setAlarm(Calendar calendar) {
+        long timeInMillis = calendar.getTimeInMillis();
+        int requestCode = (calendar.toString() + prescriptionId).hashCode();
+
+        Intent intent = new Intent(this, AlarmReceiver.class);
+        intent.putExtra("requestCode", requestCode);
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                this,
+                requestCode,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+        );
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        if (alarmManager != null) {
+            try {
+                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent);
+            } catch (SecurityException e) {
+                e.printStackTrace();
+                Toast.makeText(this, "정확한 알람 권한이 필요합니다.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+        }
+
+        // 리스트에 추가 및 저장
+        AlarmItem alarmItem = new AlarmItem(calendar, requestCode);
+        alarmItem.setPid((int) prescriptionId);
+        alarmList.add(alarmItem);
+        saveAlarms();
+    }
+
+    private void saveAlarms() {
+        SharedPreferences prefs = getSharedPreferences("alarms", MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = gson.toJson(alarmList);
+        prefs.edit().putString("alarm_list", json).apply();
+    }
+
+    private void loadAlarms() {
+        SharedPreferences prefs = getSharedPreferences("alarms", MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = prefs.getString("alarm_list", null);
+        Type type = new TypeToken<ArrayList<AlarmItem>>() {}.getType();
+        ArrayList<AlarmItem> loaded = gson.fromJson(json, type);
+        if (loaded != null) {
+            alarmList = loaded;
+        }
+    }
+
 
 }
 

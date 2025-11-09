@@ -29,11 +29,11 @@ public class AlarmItem {
 
     public boolean isTaken() {
         return isTaken;
-    }
+    } //복용 여부. 기본값 false
 
     public void setTaken(boolean taken) {
         isTaken = taken;
-    }
+    } //복용 여부 설정 메소드
 
     public int getPid() { return pid; }
 

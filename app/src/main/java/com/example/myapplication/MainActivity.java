@@ -9,7 +9,6 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.viewpager2.widget.ViewPager2;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -18,12 +17,8 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-
-import android.os.Handler;
-import android.os.Looper;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -33,15 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private MedicineTableRepository medicineTableRepository;
     private DatabaseHelper dbHelper;
 
-    private PrescriptionRepository prescriptionRepository;
-
-    private MedicationRepository medicationRepository;
-
-    private Prescription_ViewRepository prescription_viewRepository;
-
     private MedicineNameRepository medicineNameRepository;
-
-    private List<Medication> medications = new ArrayList<>(); // 의약품 정보 db 를 위한 리스트
 
     private List<MedicineName> nameListCheck = new ArrayList<>(); // 기존 의약품 이름 목록 확인을 위한 리스트
 
@@ -51,7 +38,9 @@ public class MainActivity extends AppCompatActivity {
 
     private FrameLayout loadingOverlay;
 
-    private LinearLayout buttonOCR, buttonViewPrescription, buttonBloodMenu, buttonAllAlarmList, buttonChatBot, buttonMedSearch; // buttonMedSearch는 약품 성분 조회 api 테스트용
+    private LinearLayout buttonOCR, buttonViewPrescription, buttonBloodMenu, buttonAllAlarmList, buttonChatBot,
+            buttonSetting, // 설정 버튼
+            buttonMedSearch; // buttonMedSearch는 약품 성분 조회 api 테스트용
 
     private boolean DBOK; //데이터베이스 로딩 끝났는지 판별을 위한 불린 자료형
     
@@ -68,12 +57,6 @@ public class MainActivity extends AppCompatActivity {
 
         medicineTableRepository = new MedicineTableRepository(getApplication());
 
-        prescription_viewRepository = new Prescription_ViewRepository(getApplication());
-
-        prescriptionRepository = new PrescriptionRepository(getApplication());
-
-        medicationRepository = new MedicationRepository(getApplication());
-
         medicineNameRepository = new MedicineNameRepository(getApplication());
 
         DBOK = false;
@@ -89,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
         buttonBloodMenu = findViewById(R.id.button_BloodMenu);
         buttonAllAlarmList = findViewById(R.id.button_AllAlarmList);
         buttonChatBot = findViewById(R.id.button_ChatBot);
+        buttonSetting = findViewById(R.id.button_setting);// 설정 버튼
         buttonMedSearch = findViewById(R.id.button_search_test);// 약품 성분 조회 api 테스트용
 
         loadingOverlay.setVisibility(View.VISIBLE); // 데이터베이스 초기화 작업 완료까지 보여줄 로딩 바
@@ -133,13 +117,23 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        buttonMedSearch.setOnClickListener(new View.OnClickListener() {
+        buttonSetting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, SettingActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        buttonMedSearch.setOnClickListener(new View.OnClickListener() { //테스트용. 추후 삭제 예정
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, MedSearchActivity.class);
                 startActivity(intent);
             }
         });
+
+
     }
 
     public void onBackPressed() {
