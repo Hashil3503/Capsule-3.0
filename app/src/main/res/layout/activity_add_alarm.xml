@@ -26,8 +26,8 @@
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:text="시작 날짜 선택"
-            android:textSize="14sp"
-            android:textColor="@color/textPrimary"
+            android:textSize="18sp"
+            android:textColor="#FFFFFF"
             android:background="@drawable/rounded_button"
             android:layout_marginBottom="12dp" />
 
@@ -36,8 +36,8 @@
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:text="종료 날짜 선택"
-            android:textSize="14sp"
-            android:textColor="@color/textPrimary"
+            android:textSize="18sp"
+            android:textColor="#FFFFFF"
             android:background="@drawable/rounded_button"
             android:layout_marginBottom="12dp" />
 
@@ -46,8 +46,8 @@
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:text="알람 시간 선택"
-            android:textSize="14sp"
-            android:textColor="@color/textPrimary"
+            android:textSize="18sp"
+            android:textColor="#FFFFFF"
             android:background="@drawable/rounded_button"
             android:layout_marginBottom="12dp" />
 
@@ -71,8 +71,8 @@
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:text="알람 설정"
-            android:textSize="14sp"
-            android:textColor="@color/textPrimary"
+            android:textSize="18sp"
+            android:textColor="#FFFFFF"
             android:background="@drawable/rounded_button"
             android:layout_marginBottom="12dp" />
 
@@ -82,8 +82,8 @@
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:text="처방전 알람 목록 보기"
-            android:textSize="14sp"
-            android:textColor="@color/textPrimary"
+            android:textSize="18sp"
+            android:textColor="#FFFFFF"
             android:background="@drawable/rounded_button"
             android:layout_marginBottom="12dp" />
 
@@ -92,8 +92,8 @@
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:text="처방전 알람 일괄 취소"
-            android:textSize="14sp"
-            android:textColor="@color/textPrimary"
+            android:textSize="18sp"
+            android:textColor="#FFFFFF"
             android:background="@drawable/rounded_button" />
     </LinearLayout>
 </ScrollView>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primary">#B99AF2</color> <!-- 버튼 등에 사용할 보라색 -->
+    <color name="primary">#0E94C9</color> <!-- 버튼 등에 사용할 보라색 -->
     <color name="background">#FFFFFF</color> <!-- 배경 흰색 -->
     <color name="textPrimary">#000000</color> <!-- 주요 텍스트: 검정 -->
     <color name="textSecondary">#666666</color> <!-- 힌트나 보조 텍스트: 회색 -->
@@ -11,5 +11,6 @@
     <color name="text_main">#333333</color> <!-- 진한 텍스트 -->
     <color name="text_sub">#757575</color> <!-- 부드러운 회색 텍스트 -->
     <color name="text_highlight">#6200EE</color>  <!-- 강조 표시용 텍스트 -->
+    <color name="buttonSpecial">#AFC5E7</color>
 
 </resources>

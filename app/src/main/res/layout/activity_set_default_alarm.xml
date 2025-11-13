@@ -18,8 +18,8 @@
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:text="아침"
-            android:textSize="14sp"
-            android:textColor="@color/textPrimary"
+            android:textSize="20sp"
+            android:textColor="#FFFFFF"
             android:background="@drawable/rounded_button"
             android:layout_marginBottom="12dp" />
 
@@ -28,8 +28,8 @@
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:text="점심"
-            android:textSize="14sp"
-            android:textColor="@color/textPrimary"
+            android:textSize="20sp"
+            android:textColor="#FFFFFF"
             android:background="@drawable/rounded_button"
             android:layout_marginBottom="12dp" />
 
@@ -38,8 +38,8 @@
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:text="저녁"
-            android:textSize="14sp"
-            android:textColor="@color/textPrimary"
+            android:textSize="20sp"
+            android:textColor="#FFFFFF"
             android:background="@drawable/rounded_button"
             android:layout_marginBottom="12dp" />
 
@@ -48,8 +48,8 @@
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:text="기타1"
-            android:textSize="14sp"
-            android:textColor="@color/textPrimary"
+            android:textSize="20sp"
+            android:textColor="#FFFFFF"
             android:background="@drawable/rounded_button"
             android:layout_marginBottom="12dp" />
 
@@ -58,8 +58,8 @@
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:text="기타2"
-            android:textSize="14sp"
-            android:textColor="@color/textPrimary"
+            android:textSize="20sp"
+            android:textColor="#FFFFFF"
             android:background="@drawable/rounded_button"
             android:layout_marginBottom="12dp" />
 
@@ -68,8 +68,8 @@
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:text="초기화"
-            android:textSize="14sp"
-            android:textColor="@color/textPrimary"
+            android:textSize="20sp"
+            android:textColor="#FFFFFF"
             android:background="@drawable/rounded_button"
             android:layout_marginBottom="12dp" />
 

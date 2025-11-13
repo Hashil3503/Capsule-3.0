@@ -65,8 +65,8 @@
                 android:layout_marginLeft="15dp"
                 android:layout_weight="1.5"
                 android:text="자세히"
-                android:textSize="14sp"
-                android:textColor="@color/textPrimary"
+                android:textSize="20sp"
+                android:textColor="#FFFFFF"
                 android:background="@drawable/rounded_button"
                 android:padding="8dp"
                 android:gravity="center" />
@@ -79,8 +79,8 @@
                 android:layout_marginLeft="15dp"
                 android:layout_weight="1.5"
                 android:text="알람"
-                android:textSize="14sp"
-                android:textColor="@color/textPrimary"
+                android:textSize="20sp"
+                android:textColor="#FFFFFF"
                 android:background="@drawable/rounded_button"
                 android:padding="8dp"
                 android:gravity="center" />

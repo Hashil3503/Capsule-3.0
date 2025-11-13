@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
@@ -38,14 +37,13 @@ public class MainActivity extends AppCompatActivity {
 
     private FrameLayout loadingOverlay;
 
-    private LinearLayout buttonOCR, buttonViewPrescription, buttonBloodMenu, buttonAllAlarmList, buttonChatBot,
-            buttonSetting, // 설정 버튼
-            buttonMedSearch; // buttonMedSearch는 약품 성분 조회 api 테스트용
+    // ⬇️ buttonMedSearch 제거
+    private LinearLayout buttonOCR, buttonViewPrescription, buttonBloodMenu,
+            buttonAllAlarmList, buttonChatBot, buttonSetting; // 설정 버튼
 
     private boolean DBOK; //데이터베이스 로딩 끝났는지 판별을 위한 불린 자료형
-    
-    private int infocount = 0; //의약품 정보 몇개 저장했는지 확인용
 
+    private int infocount = 0; //의약품 정보 몇개 저장했는지 확인용
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,16 +62,14 @@ public class MainActivity extends AppCompatActivity {
         // 자동완성을 위한 의약품 이름 목록 데이터베이스 초기화
         MakeNameList();
 
-
-        //UI 요소 찾기
+        // UI 요소 찾기
         loadingOverlay = findViewById(R.id.loadingOverlay);
         buttonOCR = findViewById(R.id.button_OCR);
         buttonViewPrescription = findViewById(R.id.button_ViewPrescription);
         buttonBloodMenu = findViewById(R.id.button_BloodMenu);
         buttonAllAlarmList = findViewById(R.id.button_AllAlarmList);
         buttonChatBot = findViewById(R.id.button_ChatBot);
-        buttonSetting = findViewById(R.id.button_setting);// 설정 버튼
-        buttonMedSearch = findViewById(R.id.button_search_test);// 약품 성분 조회 api 테스트용
+        buttonSetting = findViewById(R.id.button_Settings);
 
         loadingOverlay.setVisibility(View.VISIBLE); // 데이터베이스 초기화 작업 완료까지 보여줄 로딩 바
 
@@ -125,17 +121,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        buttonMedSearch.setOnClickListener(new View.OnClickListener() { //테스트용. 추후 삭제 예정
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, MedSearchActivity.class);
-                startActivity(intent);
-            }
-        });
-
-
+        // ⬇️ 여기 있던 buttonMedSearch 클릭 리스너도 삭제함
     }
 
+    @Override
     public void onBackPressed() {
         super.onBackPressed();
         finishAffinity(); // 모든 액티비티 종료
@@ -160,14 +149,6 @@ public class MainActivity extends AppCompatActivity {
         medicineTableRepository.insert(medicine);
         infocount++;
         Log.d(TAG, "약품 정보 저장 완료: " + medicineName + " 총 " + infocount + "개");
-//        Log.d(TAG, "=== 저장된 약품 정보 ===");
-//        Log.d(TAG, "이름: " + medicineName);
-//        Log.d(TAG, "성분: " + ingredient);
-//        Log.d(TAG, "효과: " + effect);
-//        Log.d(TAG, "제형: " + form);
-//        Log.d(TAG, "주의사항: " + precaution);
-//        Log.d(TAG, "총 저장된 수: " + infocount);
-
     }
 
     @Override
@@ -182,14 +163,13 @@ public class MainActivity extends AppCompatActivity {
     private void MakeNameList() {
         new Thread(() -> {
             nameListCheck = medicineNameRepository.getAllMedicineNames();
-            if(nameListCheck != null && !nameListCheck.isEmpty()){
+            if (nameListCheck != null && !nameListCheck.isEmpty()) {
                 Log.d(TAG, "자동완성 데이터베이스가 이미 생성됨.");
                 runOnUiThread(() -> Toast.makeText(this, "자동 완성 데이터베이스 준비 완료", Toast.LENGTH_SHORT).show());
                 DBOK = true;
                 checkLoadingDone();
                 return;
-            }
-            else {
+            } else {
                 try {
                     String fileName = "약품명목록.csv";
                     InputStream inputStream = getAssets().open(fileName);
@@ -238,7 +218,6 @@ public class MainActivity extends AppCompatActivity {
                     Log.d(TAG, "로드된 약품명 샘플:");
                     for (int i = 0; i < sampleCount; i++) {
                         Log.d(TAG, "- " + medicineNames.get(i));
-
                     }
 
                 } catch (IOException e) {
@@ -250,7 +229,6 @@ public class MainActivity extends AppCompatActivity {
                     runOnUiThread(() -> Toast.makeText(this, "데이터베이스 처리 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show());
                     finish();
                 }
-
             }
         }).start();
     }
@@ -298,6 +276,7 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "CSV 파일 처리 완료: 총 " + rowCount + "행");
         return dataTable;
     }
+
     private List<String> extractProductNames(List<Map<String, String>> dataTable) {
         List<String> productNames = new ArrayList<>();
 
@@ -319,5 +298,4 @@ public class MainActivity extends AppCompatActivity {
             });
         }
     }
-
 }

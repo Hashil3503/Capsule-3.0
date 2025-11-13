@@ -194,17 +194,19 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="삭제"
-                android:textColor="@color/textPrimary"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp"
                 android:background="@drawable/rounded_button" />
 
             <Button
                 android:id="@+id/editButton"
                 android:layout_width="0dp"
+                android:textSize="20sp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginLeft="5dp"
                 android:text="수정"
-                android:textColor="@color/textPrimary"
+                android:textColor="#FFFFFF"
                 android:background="@drawable/rounded_button" />
 
         </LinearLayout>

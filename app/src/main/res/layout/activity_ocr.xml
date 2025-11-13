@@ -49,8 +49,9 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="5dp"
             android:layout_marginTop="10dp"
+            android:textSize="18sp"
             android:text="처방전 촬영하기"
-            android:textColor="@color/textPrimary"
+            android:textColor="#FFFFFF"
             android:background="@drawable/rounded_button" />
 
         <Button
@@ -61,8 +62,9 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="10dp"
             android:layout_marginTop="10dp"
+            android:textSize="18sp"
             android:text="갤러리에서 선택하기"
-            android:textColor="@color/textPrimary"
+            android:textColor="#FFFFFF"
             android:background="@drawable/rounded_button" />
     </LinearLayout>
 
@@ -82,7 +84,8 @@
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         android:text="수동 추가"
-        android:textColor="@color/textPrimary"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
         android:background="@drawable/rounded_button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"

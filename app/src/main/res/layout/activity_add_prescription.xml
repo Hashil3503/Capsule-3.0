@@ -14,7 +14,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="복용 일수"
-        android:textColor="@color/textPrimary"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -26,6 +27,7 @@
         android:layout_height="wrap_content"
         android:hint="복용 일수를 입력하세요"
         android:textColor="@color/textPrimary"
+        android:textSize="18sp"
         android:textColorHint="@color/textSecondary"
         android:background="@color/background"
         app:layout_constraintTop_toBottomOf="@id/Duration"
@@ -37,6 +39,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
         android:text="처방전 등록 일자(테스트용 기능)"
         app:layout_constraintTop_toBottomOf="@id/editDuration"
         app:layout_constraintStart_toStartOf="parent"
@@ -76,7 +80,8 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:text="의약품 추가"
-            android:textColor="@color/textPrimary"
+            android:textSize="18sp"
+            android:textColor="#FFFFFF"
             android:background="@drawable/rounded_button" />
 
         <Button
@@ -85,7 +90,8 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:text="처방전 등록"
-            android:textColor="@color/textPrimary"
+            android:textSize="18sp"
+            android:textColor="#FFFFFF"
             android:background="@drawable/rounded_button" />
     </LinearLayout>
 
