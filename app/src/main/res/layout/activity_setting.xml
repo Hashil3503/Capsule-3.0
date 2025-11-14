@@ -36,8 +36,8 @@
                 android:padding="16dp">
 
                 <ImageView
-                    android:layout_width="65dp"
-                    android:layout_height="54dp"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
                     android:adjustViewBounds="true"
                     android:contentDescription="@string/btn_prescription_ocr"
                     android:scaleType="fitCenter"
@@ -54,9 +54,9 @@
 
             <!-- 미구현 버튼. 나중에 회원 정보 수정, 비번 변경 등에 사용할 듯 -->
             <LinearLayout
-                android:id="@+id/setTemptButton"
+                android:id="@+id/setPasswordButton"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="127dp"
                 android:layout_columnWeight="1"
                 android:background="@drawable/rounded_button_white"
                 android:gravity="center"
@@ -75,7 +75,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="임시 버튼(추후 비번 수정 등 구현)"
+                    android:text="비밀번호 설정"
                     android:textColor="#000000"
                     android:textSize="14sp" />
             </LinearLayout>

@@ -11,7 +11,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 
 
 //앱에서 사용할 데이터베이스 (일단은 한개로 구성했는데, 추후 로그인 기능 등을 추가한다면 추가적인 파일 필요)
-@Database(entities = {Prescription.class, Medication.class, Prescription_View.class, BloodPressure.class, BloodSugar.class, MedicineTable.class, MedicineName.class, DefaultAlarmSet.class}, version = 1)
+@Database(entities = {Prescription.class, Medication.class, Prescription_View.class, MedicineTable.class, MedicineName.class, DefaultAlarmSet.class}, version = 1)
 
 @TypeConverters({DateConverter.class}) //Date 타입 저장을 위한 컨버터를 DB에 적용시키는 구문
 
@@ -19,8 +19,6 @@ public abstract class DB extends RoomDatabase {
     public abstract PrescriptionDao prescriptionDao();
     public abstract MedicationDao medicationDao();
     public abstract Prescription_ViewDao prescription_viewDao();
-    public abstract BloodSugarDao bloodsugarDao();
-    public abstract BloodPressureDao bloodpressureDao();
     public abstract MedicineTableDao medicineTableDao();
     public abstract MedicineNameDao medicineNameListDao();
     public abstract DefaultAlarmSetDao defaultAlarmSetDao();

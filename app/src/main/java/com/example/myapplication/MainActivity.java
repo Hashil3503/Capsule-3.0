@@ -1,11 +1,20 @@
 package com.example.myapplication;
 
+import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,7 +33,6 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
 
-    private MedicineTableRepository medicineTableRepository;
     private DatabaseHelper dbHelper;
 
     private MedicineNameRepository medicineNameRepository;
@@ -38,8 +46,7 @@ public class MainActivity extends AppCompatActivity {
     private FrameLayout loadingOverlay;
 
     // ⬇️ buttonMedSearch 제거
-    private LinearLayout buttonOCR, buttonViewPrescription, buttonBloodMenu,
-            buttonAllAlarmList, buttonChatBot, buttonSetting; // 설정 버튼
+    private LinearLayout buttonOCR, buttonViewPrescription, buttonAllAlarmList, buttonChatBot, buttonSetting; // 설정 버튼
 
     private boolean DBOK; //데이터베이스 로딩 끝났는지 판별을 위한 불린 자료형
 
@@ -53,9 +60,9 @@ public class MainActivity extends AppCompatActivity {
         // DatabaseHelper 초기화
         dbHelper = DatabaseHelper.getInstance(getApplicationContext());
 
-        medicineTableRepository = new MedicineTableRepository(getApplication());
-
         medicineNameRepository = new MedicineNameRepository(getApplication());
+
+        showPasswordDialog();
 
         DBOK = false;
 
@@ -66,7 +73,6 @@ public class MainActivity extends AppCompatActivity {
         loadingOverlay = findViewById(R.id.loadingOverlay);
         buttonOCR = findViewById(R.id.button_OCR);
         buttonViewPrescription = findViewById(R.id.button_ViewPrescription);
-        buttonBloodMenu = findViewById(R.id.button_BloodMenu);
         buttonAllAlarmList = findViewById(R.id.button_AllAlarmList);
         buttonChatBot = findViewById(R.id.button_ChatBot);
         buttonSetting = findViewById(R.id.button_Settings);
@@ -85,14 +91,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, ViewPrescriptionActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        buttonBloodMenu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, BloodMenuActivity.class);
                 startActivity(intent);
             }
         });
@@ -120,8 +118,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
-        // ⬇️ 여기 있던 buttonMedSearch 클릭 리스너도 삭제함
     }
 
     @Override
@@ -130,26 +126,6 @@ public class MainActivity extends AppCompatActivity {
         finishAffinity(); // 모든 액티비티 종료
     }
 
-    private void saveMedicineInfo(String medicineName, String ingredient, String effect, String form, String precaution) {
-        if (medicineTableRepository.getMedicationByName(medicineName) != null) {
-            Log.d(TAG, "중복된 약품 발견: " + medicineName + ", 저장 생략.");
-            return;  // 중복된 약품명이 있으면 삽입하지 않고 종료
-        }
-
-        MedicineTable medicine = new MedicineTable();
-        medicine.setName(medicineName);
-        medicine.setIngredients(ingredient);
-        medicine.setEffects(effect);
-        medicine.setAppearance(form);
-        medicine.setCaution(precaution);
-        medicine.setMemo("");
-        medicine.setSideeffct("");
-        medicine.setSe_existence(false);
-
-        medicineTableRepository.insert(medicine);
-        infocount++;
-        Log.d(TAG, "약품 정보 저장 완료: " + medicineName + " 총 " + infocount + "개");
-    }
 
     @Override
     protected void onDestroy() {
@@ -291,11 +267,79 @@ public class MainActivity extends AppCompatActivity {
         return productNames;
     }
 
-    private void checkLoadingDone() { //두 데이터베이스가 모두 초기화 되었는지 체크하기 위한 메서드
+    private void checkLoadingDone() { //데이터베이스가 모두 초기화 되었는지 체크하기 위한 메서드
         if (DBOK) {
             runOnUiThread(() -> {
                 loadingOverlay.setVisibility(View.GONE);
             });
         }
     }
+
+    private void showPasswordDialog() {
+        Dialog dialog = new Dialog(MainActivity.this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.input_password_window);
+        dialog.setCancelable(false);
+
+        EditText inputPassword = dialog.findViewById(R.id.inputPassword);
+        TextView textWarning = dialog.findViewById(R.id.textWarning);
+        Button loginBtn = dialog.findViewById(R.id.loginButton);
+        Button cancelBtn = dialog.findViewById(R.id.cancelButton);
+
+        PasswordSecurityHelper helper = new PasswordSecurityHelper(this);
+        String savedHash = helper.getPasswordHash();
+
+        textWarning.setVisibility(View.INVISIBLE);
+
+        // 만약 비번이 저장된 적이 없다면 → 처음 실행 → PW 설정 모드로 전환
+        if (savedHash == null) {
+            textWarning.setText("처음 사용하는 경우 비밀번호를 설정하세요.");
+            textWarning.setVisibility(View.VISIBLE);
+            loginBtn.setText("설정");
+        }
+
+        loginBtn.setOnClickListener(v -> {
+            String pwInput = inputPassword.getText().toString();
+
+            // 최소 길이 체크 (신규 PW 설정 또는 변경 시)
+            if (pwInput.length() < 8) {
+                textWarning.setText("비밀번호는 최소 8자리 이상이어야 합니다.");
+                textWarning.setVisibility(View.VISIBLE);
+                return;  // 여기서 종료 → PW 저장하지 않음
+            }
+
+            if (savedHash == null) {
+                // 첫 비밀번호 설정
+                helper.savePasswordHash(PasswordSecurityHelper.sha256(pwInput));
+                dialog.dismiss();
+                showPasswordDialog();
+            } else {
+                // 기존 비밀번호 검증
+                if (helper.checkPassword(pwInput)) {
+                    dialog.dismiss();
+                } else {
+                    textWarning.setText("비밀번호가 틀렸습니다.");
+                    textWarning.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+        cancelBtn.setOnClickListener(v -> {
+            // 로그인 취소 = 앱 종료
+            finish();
+        });
+
+        dialog.show();
+
+        Window window = dialog.getWindow();
+        if (window != null) {
+            window.setLayout(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+            );
+            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
+    }
+
+
 }
