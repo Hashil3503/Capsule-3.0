@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:fillViewport="true"
+    android:background="@color/background">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
+
+        <!-- 약 이미지 -->
+        <ImageView
+            android:id="@+id/ivImage"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="16dp"
+            android:src="@drawable/ic_pill"
+            android:contentDescription="약 이미지" />
+
+        <!-- 약 이름 -->
+        <TextView
+            android:id="@+id/tvName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="약 이름"
+            android:textSize="24sp"
+            android:textColor="#000000"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp" />
+
+        <!-- 효능/효과 -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="효능 / 효과"
+            android:textColor="#000000"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:layout_marginBottom="4dp" />
+
+        <TextView
+            android:id="@+id/tvEffect"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="내용 없음"
+            android:layout_marginBottom="16dp" />
+
+        <!-- 부작용 -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="부작용"
+            android:textColor="#000000"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:layout_marginBottom="4dp" />
+
+        <TextView
+            android:id="@+id/tvSideEffect"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="내용 없음"
+            android:layout_marginBottom="16dp" />
+
+        <!-- 주의사항 -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="주의사항"
+            android:textColor="#000000"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:layout_marginBottom="4dp" />
+
+        <TextView
+            android:id="@+id/tvCaution"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="내용 없음"
+            android:layout_marginBottom="16dp" />
+
+    </LinearLayout>
+
+</ScrollView>

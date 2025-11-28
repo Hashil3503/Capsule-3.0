@@ -78,23 +78,39 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-        <!-- 💊 복용중 의약품 카드 -->
+        <!-- 리워드 표시/지급 바 (capsule_mine 쪽) -->
         <LinearLayout
-            android:id="@+id/currentMedWrapper"
+            android:id="@+id/rewardBar"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:background="@drawable/rounded_button_white"
-            android:orientation="vertical"
-            android:padding="16dp"
-            android:layout_marginBottom="24dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:padding="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="16dp"
             app:layout_constraintTop_toBottomOf="@id/logoArea"
-            android:layout_marginTop="16dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            android:background="@drawable/rounded_button_white">
+
+            <TextView
+                android:id="@+id/tvRewardBalance"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="리워드: 0"
+                android:textColor="#000000"
+                android:textSize="16sp" />
+
+            <Button
+                android:id="@+id/btnAdd100"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="리워드 +100 (테스트)" />
         </LinearLayout>
 
-        <!-- 첫 줄: 처방전 인식 / 처방전 조회 -->
+
+        <!-- 상점 페이지 이동 버튼 -->
+
+        <!-- 1번 줄: 처방전 인식 / 처방전 조회 -->
         <LinearLayout
             android:id="@+id/rowTopActions"
             android:layout_width="match_parent"
@@ -102,7 +118,7 @@
             android:gravity="center"
             android:orientation="horizontal"
             android:layout_marginBottom="24dp"
-            app:layout_constraintTop_toBottomOf="@id/currentMedWrapper"
+            app:layout_constraintTop_toBottomOf="@id/rewardBar"
             android:layout_marginTop="16dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
@@ -164,7 +180,8 @@
             </LinearLayout>
         </LinearLayout>
 
-        <!-- 둘째 줄: 챗봇 / 모든 알람 목록 -->
+
+        <!-- 2번 줄: 처방전 인식 / 처방전 조회 -->
         <LinearLayout
             android:id="@+id/rowMidActions"
             android:layout_width="match_parent"
@@ -172,8 +189,8 @@
             android:gravity="center"
             android:orientation="horizontal"
             android:layout_marginBottom="24dp"
-            app:layout_constraintTop_toBottomOf="@id/rowTopActions"
             android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@id/rowTopActions"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 
@@ -233,6 +250,78 @@
                     android:contentDescription="@string/btn_all_alarm_list" />
             </LinearLayout>
         </LinearLayout>
+
+        <!-- 3번 줄: 챗봇 / 모든 알람 목록 -->
+        <LinearLayout
+            android:id="@+id/rowBottomActions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:layout_marginBottom="24dp"
+            app:layout_constraintTop_toBottomOf="@id/rowMidActions"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <!-- 챗봇 -->
+            <LinearLayout
+                android:id="@+id/button_ShopPage"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_button_white"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:layout_marginEnd="12dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:text="상점"
+                    android:textColor="#000000"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/ic_shop"
+                    android:contentDescription="@string/btn_graph" />
+            </LinearLayout>
+
+            <!-- 모든 알람 목록 -->
+            <LinearLayout
+                android:id="@+id/button_MedicineDex"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_button_white"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:layout_marginStart="12dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:text="약품 도감"
+                    android:textColor="#000000"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/alarmhome"
+                    android:contentDescription="@string/btn_all_alarm_list" />
+            </LinearLayout>
+
+        </LinearLayout>
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

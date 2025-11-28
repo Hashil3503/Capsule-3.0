@@ -27,4 +27,7 @@ public interface MedicationDao {
     @Query("DELETE FROM medication WHERE id = :medicationId")
     void deleteMedicationById(long medicationId);
 
+    @Query("SELECT * FROM medication WHERE itemName = :itemName LIMIT 1")
+    Medication getMedicationByName(String itemName);
+
 }

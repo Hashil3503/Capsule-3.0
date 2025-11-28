@@ -22,6 +22,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
+        android:name=".MyApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -40,17 +41,13 @@
             android:exported="false"
             android:theme="@style/Theme.MyApplication" />
         <activity
-            android:name=".MedSearchActivity"
-            android:exported="false" />
+            android:name=".MedicineDexActivity" />
         <activity
-            android:name=".GraphActivity"
-            android:exported="false" />
-
+            android:name=".MedicineDexDetailActivity" />
         <service
             android:name=".AlarmForegroundService"
             android:exported="false"
             android:foregroundServiceType="dataSync" />
-
         <activity
             android:name=".AllAlarmListActivity"
             android:exported="false" />
@@ -65,12 +62,6 @@
             android:turnScreenOn="true" />
         <activity
             android:name=".AlarmListActivity"
-            android:exported="false" />
-        <activity
-            android:name=".BloodViewActivity"
-            android:exported="false" />
-        <activity
-            android:name=".BloodMenuActivity"
             android:exported="false" />
         <activity
             android:name=".ViewDetailActivity"
@@ -96,6 +87,9 @@
             android:windowSoftInputMode="adjustResize" />
         <activity android:name=".OCRActivity" />
         <activity android:name=".ResultActivity" />
+        <activity android:name=".ui.ShopActivity" />
+        <activity android:name=".ui.PostcodeActivity" android:exported="false" />
+        <activity android:name=".ui.OrdersActivity" />
 
         <receiver
             android:name=".AlarmReceiver"

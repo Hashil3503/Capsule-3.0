@@ -19,6 +19,9 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.myapplication.ui.ShopActivity;
+import com.example.myapplication.util.RewardManager;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -45,8 +48,11 @@ public class MainActivity extends AppCompatActivity {
 
     private FrameLayout loadingOverlay;
 
-    // ⬇️ buttonMedSearch 제거
-    private LinearLayout buttonOCR, buttonViewPrescription, buttonAllAlarmList, buttonChatBot, buttonSetting; // 설정 버튼
+    //각각 리워드 표시, 리워드 100 추가(테스트용)
+    private TextView tvReward;
+    private Button btnAdd100;
+
+    private LinearLayout buttonOCR, buttonViewPrescription, buttonAllAlarmList, buttonChatBot, buttonSetting, btnShopTile, buttonMedicineDex;
 
     private boolean DBOK; //데이터베이스 로딩 끝났는지 판별을 위한 불린 자료형
 
@@ -70,12 +76,17 @@ public class MainActivity extends AppCompatActivity {
         MakeNameList();
 
         // UI 요소 찾기
-        loadingOverlay = findViewById(R.id.loadingOverlay);
-        buttonOCR = findViewById(R.id.button_OCR);
-        buttonViewPrescription = findViewById(R.id.button_ViewPrescription);
-        buttonAllAlarmList = findViewById(R.id.button_AllAlarmList);
-        buttonChatBot = findViewById(R.id.button_ChatBot);
-        buttonSetting = findViewById(R.id.button_Settings);
+        loadingOverlay = findViewById(R.id.loadingOverlay); // 데이터베이스 초기화 시 표시할 로딩 오버레이
+        buttonOCR = findViewById(R.id.button_OCR); // 처방전 인식 버튼
+        buttonViewPrescription = findViewById(R.id.button_ViewPrescription); // 처방전 조회 버튼
+        buttonAllAlarmList = findViewById(R.id.button_AllAlarmList); // 전체 알람 목록 조회 버튼
+        buttonChatBot = findViewById(R.id.button_ChatBot); // 챗봇 버튼
+        buttonSetting = findViewById(R.id.button_Settings); // 설정 버튼
+        buttonMedicineDex = findViewById(R.id.button_MedicineDex); //약품 도감 버튼
+        // === [리워드 표시/지급 + 상점 진입 연결] 시작 ===
+        tvReward = findViewById(R.id.tvRewardBalance);
+        btnAdd100 = findViewById(R.id.btnAdd100);
+        btnShopTile = findViewById(R.id.button_ShopPage);
 
         loadingOverlay.setVisibility(View.VISIBLE); // 데이터베이스 초기화 작업 완료까지 보여줄 로딩 바
 
@@ -111,6 +122,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        buttonMedicineDex.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, MedicineDexActivity.class);
+                startActivity(intent);
+            }
+        });
+
         buttonSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -118,6 +137,62 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+
+        // XML에 해당 뷰가 없더라도 앱이 죽지 않도록 가드
+        if (tvReward != null) refreshBalance();
+
+        if (tvReward != null) {
+            tvReward.setOnLongClickListener(v -> {
+                RewardManager.reset(this);
+                refreshBalance();
+                Toast.makeText(this, "리워드를 0으로 초기화했습니다", Toast.LENGTH_SHORT).show();
+                return true; // 롱클릭 이벤트 소비
+            });
+        }
+
+
+
+
+        if (btnShopTile != null) {
+            btnShopTile.setOnClickListener(v -> {
+                // 오버레이가 켜져 있으면 안내하고 리턴
+                if (loadingOverlay != null && loadingOverlay.getVisibility() == View.VISIBLE) {
+                    Toast.makeText(this, "데이터 준비 중입니다. 잠시만요.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                startActivity(new Intent(MainActivity.this, ShopActivity.class));
+            });
+        } else {
+            Log.w("MainActivity", "button_ShopPage 뷰 못 찾음 - XML id를 확인하세요.");
+        }
+
+
+
+
+        if (btnAdd100 != null) {
+            // 짧게 누르면 +100 (기존)
+            btnAdd100.setOnClickListener(v -> {
+                RewardManager.add(this, 100);
+                refreshBalance();
+            });
+
+            // 길게 누르면 0으로 초기화 (추가)
+            btnAdd100.setOnLongClickListener(v -> {
+                RewardManager.reset(this);
+                refreshBalance();
+                Toast.makeText(this, "리워드를 0으로 초기화했습니다", Toast.LENGTH_SHORT).show();
+                return true; // 롱클릭 이벤트 소비(짧은 클릭과 중복 실행 방지)
+            });
+        }
+
+        // === [끝] ===
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        refreshBalance();
     }
 
     @Override
@@ -338,6 +413,11 @@ public class MainActivity extends AppCompatActivity {
                     ViewGroup.LayoutParams.WRAP_CONTENT
             );
             window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
+    }
+    private void refreshBalance() {
+        if (tvReward != null) {
+            tvReward.setText("리워드: " + RewardManager.getBalance(this));
         }
     }
 

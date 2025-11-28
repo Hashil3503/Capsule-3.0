@@ -63,7 +63,7 @@
             android:layout_marginRight="10dp"
             android:layout_marginTop="10dp"
             android:textSize="18sp"
-            android:text="갤러리에서 선택하기"
+            android:text="갤러리에서 선택"
             android:textColor="#FFFFFF"
             android:background="@drawable/rounded_button" />
     </LinearLayout>

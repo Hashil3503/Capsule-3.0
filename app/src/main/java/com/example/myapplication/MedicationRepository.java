@@ -16,6 +16,10 @@ public class MedicationRepository {
         executorService = Executors.newSingleThreadExecutor(); //데이터베이스 작업을 백그라운드 스레드에서 실행
     }
 
+    public Medication getMedicationByName(String itemName) {
+        return medicationDao.getMedicationByName(itemName);
+    }
+
     public long insert(Medication medication) { //long으로 선언한 이유는 관계성 테이블 생성이 용이하도록 테이블에 레코드를 추가할 시 해당 id를 반환하기 위함.
         Future<Long> future = executorService.submit(() -> medicationDao.insert(medication)); //Future<타입>
         try {
