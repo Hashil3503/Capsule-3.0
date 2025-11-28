@@ -10,12 +10,14 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class MedicineDexAdapter extends RecyclerView.Adapter<MedicineDexAdapter.ViewHolder> {
 
-    // 클릭 콜백
     public interface OnItemClickListener {
         void onItemClick(MedicineDex item);
     }
@@ -24,11 +26,12 @@ public class MedicineDexAdapter extends RecyclerView.Adapter<MedicineDexAdapter.
     private List<MedicineDex> medicineList = new ArrayList<>();
     private OnItemClickListener listener;
 
+    // 💡 이미지 URL 캐시 (한 번 받아오면 계속 재사용)
+    private final HashMap<String, String> imageCache = new HashMap<>();
+
     public MedicineDexAdapter(Context context, List<MedicineDex> medicineList) {
         this.context = context;
-        if (medicineList != null) {
-            this.medicineList = medicineList;
-        }
+        if (medicineList != null) this.medicineList = medicineList;
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {
@@ -42,19 +45,30 @@ public class MedicineDexAdapter extends RecyclerView.Adapter<MedicineDexAdapter.
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public MedicineDexAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context)
                 .inflate(R.layout.item_medicine_dex, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull MedicineDexAdapter.ViewHolder holder, int position) {
         MedicineDex item = medicineList.get(position);
 
         holder.tvName.setText(item.getMedicineName());
         holder.tvDates.setText("등록 날짜: " + item.getAddedDates());
+
+        // 기본 이미지
         holder.ivThumb.setImageResource(R.drawable.ic_pill);
+
+        // 🔥 캐시 먼저 확인
+        if (imageCache.containsKey(item.getMedicineName())) {
+            Glide.with(context)
+                    .load(imageCache.get(item.getMedicineName()))
+                    .placeholder(R.drawable.ic_pill)
+                    .error(R.drawable.ic_pill)
+                    .into(holder.ivThumb);
+        }
 
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) listener.onItemClick(item);
@@ -76,5 +90,10 @@ public class MedicineDexAdapter extends RecyclerView.Adapter<MedicineDexAdapter.
             tvName = itemView.findViewById(R.id.tvName);
             tvDates = itemView.findViewById(R.id.tvDates);
         }
+    }
+
+    // 👇 외부(Activity or Repository)에서 미리 이미지 URL을 받아오고 여기로 저장하게 함
+    public void putImageUrl(String medicineName, String url) {
+        imageCache.put(medicineName, url);
     }
 }

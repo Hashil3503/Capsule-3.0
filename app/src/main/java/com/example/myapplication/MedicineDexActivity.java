@@ -3,6 +3,7 @@ package com.example.myapplication;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,6 +23,10 @@ public class MedicineDexActivity extends AppCompatActivity {
     private MedicineDexRepository repository;
     private ProgressBar loadingBar;
 
+    private ImageView ivThumb;
+
+    private String apiKey;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,8 +35,12 @@ public class MedicineDexActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerView);
         loadingBar  = findViewById(R.id.loadingBar);
 
+        apiKey = getString(R.string.med_search_api_key); //e약은요 api 키 가져오기
+
+
         // ✅ 어댑터 생성 (빈 리스트로 시작)
         adapter = new MedicineDexAdapter(this, new ArrayList<>());
+        recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
 
@@ -44,10 +53,6 @@ public class MedicineDexActivity extends AppCompatActivity {
 
         repository = new MedicineDexRepository(getApplication());
 
-        // ✅ [테스트용] 도감에 강제로 새 약 하나 추가 + 리워드 지급 테스트
-//        String testName = "리워드테스트_" + System.currentTimeMillis();
-//        repository.insertOrUpdate(testName);
-
         loadMedicineDexList();
     }
 
@@ -55,6 +60,20 @@ public class MedicineDexActivity extends AppCompatActivity {
         loadingBar.setVisibility(View.VISIBLE);
         repository.getAllMedicineDex(result -> runOnUiThread(() -> {
             adapter.setItems(result);
+
+            // 이미지 URL을 비동기로 하나씩 받아와서 adapter에 저장
+            for (MedicineDex item : result) {
+                new Thread(() -> {
+                    String url = CommonMethod.getDrugImageUrl(apiKey, item.getMedicineName());
+
+                    // UI thread에서 캐시에 저장
+                    runOnUiThread(() -> {
+                        adapter.putImageUrl(item.getMedicineName(), url);
+                        adapter.notifyItemChanged(result.indexOf(item)); // 이미지 갱신
+                    });
+                }).start();
+            }
+
             loadingBar.setVisibility(View.GONE);
 
 

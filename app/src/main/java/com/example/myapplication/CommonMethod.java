@@ -148,5 +148,73 @@ public class CommonMethod { //자주 쓰일 것 같은 메서드 모아둠
         return medication;
     }
 
+    public static String getDrugImageUrl(String apiKey, String drugName) {
+        String nolName = normalizeWord(drugName);
+        String imageUrl = null;
+
+        try {
+            String urlStr = SERVICE_URL +
+                    "?serviceKey=" + URLEncoder.encode(apiKey, "UTF-8") +
+                    "&type=json" +
+                    "&itemName=" + URLEncoder.encode(nolName, "UTF-8") +
+                    "&numOfRows=1&pageNo=1";
+
+            URL url = new URL(urlStr);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+
+            BufferedReader br;
+            if (conn.getResponseCode() == 200) {
+                br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            } else {
+                br = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
+            }
+
+            StringBuilder response = new StringBuilder();
+            String line;
+            while ((line = br.readLine()) != null) {
+                response.append(line);
+            }
+            br.close();
+
+            JSONObject json = new JSONObject(response.toString());
+            JSONObject body = json.optJSONObject("body");
+
+            if (body == null) return null;
+
+            Object itemsNode = body.opt("items");
+            JSONArray items = null;
+
+            if (itemsNode instanceof JSONArray) {
+                items = (JSONArray) itemsNode;
+            } else if (itemsNode instanceof JSONObject) {
+                items = ((JSONObject) itemsNode).optJSONArray("item");
+            }
+
+            if (items == null || items.length() == 0) {
+                return null;
+            }
+
+            // 첫 번째 결과
+            JSONObject item = items.getJSONObject(0);
+
+            // ⭐ 여기서 "낱알 이미지" 가져오기
+            imageUrl = item.optString("itemImage", null);
+
+            // 혹시 낱알 이미지가 없는 경우 → 일반 이미지로 fallback
+//            if (imageUrl == null || imageUrl.isEmpty()) {
+//                imageUrl = item.optString("itemImage", null);
+//            }
+
+            Log.d("DrugImage", "약품 이미지 URL: " + imageUrl);
+
+        } catch (Exception e) {
+            Log.e("DrugImage", "API 호출 실패", e);
+        }
+
+        return imageUrl; // null일 수도 있음
+    }
+
+
 }
 

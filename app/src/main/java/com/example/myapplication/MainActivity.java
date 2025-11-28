@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
-import android.content.SharedPreferences;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -68,10 +67,7 @@ public class MainActivity extends AppCompatActivity {
 
         medicineNameRepository = new MedicineNameRepository(getApplication());
 
-        SharedPreferences prefs = getSharedPreferences("app_prefs", MODE_PRIVATE); // 앱 내부의 저장 공간에 로그인 여부를 저장하기 위해 변수 선언
-        boolean loggedIn = prefs.getBoolean("logged_in", false); // 앱 내부의 저장공간에서 logged_in라는 키의 값을 가져와 loggedIn이라는  변수에 저장
-
-        if (!loggedIn) { //로그인 되었는지 확인
+        if (!LoginManager.isLoggedIn()) { //로그인 되었는지 확인
             showPasswordDialog();
         }
 
@@ -396,8 +392,7 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 // 기존 비밀번호 검증
                 if (helper.checkPassword(pwInput)) {
-                    SharedPreferences prefs = getSharedPreferences("app_prefs", MODE_PRIVATE); // 앱 내부에 작은 저장공간을 변수로 선언(여기에 로그인 여부를 저장)
-                    prefs.edit().putBoolean("logged_in", true).apply(); //위에서 선언한 공간에 (logged_in : true)의 key:value 쌍을 저장함
+                    LoginManager.login(); // 로그인 여부 저장
                     dialog.dismiss();
                 } else {
                     textWarning.setText("비밀번호가 틀렸습니다.");

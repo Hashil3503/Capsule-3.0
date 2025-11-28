@@ -6,6 +6,8 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
+
 /**
  * 약 도감 상세 화면
  * - 도감에서 약을 클릭하면 이 액티비티로 넘어와서
@@ -20,7 +22,9 @@ public class MedicineDexDetailActivity extends AppCompatActivity {
     private TextView tvCaution;
     private ImageView ivImage;
 
-    private MedicationRepository medicationRepository;
+    private String apiKey; //e약은요 apiKey
+
+    private MedicationRepository medicationDexRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,8 +38,10 @@ public class MedicineDexDetailActivity extends AppCompatActivity {
         tvCaution = findViewById(R.id.tvCaution);
         ivImage = findViewById(R.id.ivImage);
 
+        apiKey = getString(R.string.med_search_api_key); //e약은요 api 키 가져오기
+
         // Repo 생성
-        medicationRepository = new MedicationRepository(getApplication());
+        medicationDexRepository = new MedicationRepository(getApplication());
 
         // 도감에서 넘겨준 약 이름 받기 (MedicineDexActivity에서 넣어준 키: "medicineName")
         String medicineName = getIntent().getStringExtra("medicineName");
@@ -54,7 +60,8 @@ public class MedicineDexDetailActivity extends AppCompatActivity {
         // Medication 테이블에서 약 정보 조회 (이름으로 검색)
         new Thread(() -> {
             // 🔹 잠시 후에 만들 메서드: medicationRepository.getMedicationByName(medicineName);
-            Medication medication = medicationRepository.getMedicationByName(medicineName);
+            Medication medication = medicationDexRepository.getMedicationByName(medicineName);
+            String url = CommonMethod.getDrugImageUrl(apiKey, medicineName);
 
             runOnUiThread(() -> {
                 if (medication != null) {
@@ -97,6 +104,12 @@ public class MedicineDexDetailActivity extends AppCompatActivity {
                     tvEffect.setText("해당 약에 대한 상세 정보를 찾을 수 없습니다.");
                     tvSideEffect.setText("");
                     tvCaution.setText("");
+                }
+                if (url != null && !url.isEmpty()) {
+                    Glide.with(MedicineDexDetailActivity.this)
+                            .load(url)
+                            .placeholder(R.drawable.ic_pill)
+                            .into(ivImage);
                 }
             });
         }).start();

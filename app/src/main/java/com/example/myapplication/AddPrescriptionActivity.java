@@ -45,6 +45,7 @@ public class AddPrescriptionActivity extends AppCompatActivity {
     private Prescription_ViewRepository prescription_viewRepository;
     private MedicineNameRepository medicineNameRepository;
     private DefaultAlarmSetRepository defaultAlarmSetRepository; //알람 자동 설정을 위한 리파지터리
+    private MedicineDexRepository medicineDexRepository;
     private List<String> medicineNames = new ArrayList<>(); // 자동완성을 위한 리스트
     private List<MedicineName> nameList = new ArrayList<>(); // 자동완성을 위한 리스트 2
     private List<String> ocrMedicineNames = new ArrayList<>(); //ocr에서 추출한 의약품 이름을 담아두는 리스트
@@ -67,6 +68,7 @@ public class AddPrescriptionActivity extends AppCompatActivity {
         prescription_viewRepository = new Prescription_ViewRepository(getApplication());
         medicineNameRepository = new MedicineNameRepository(getApplication());
         defaultAlarmSetRepository = new DefaultAlarmSetRepository(getApplication());
+        medicineDexRepository = new MedicineDexRepository(getApplication());
 
         apiKey = getString(R.string.med_search_api_key); //e약은요 api 키 가져오기
 
@@ -250,6 +252,12 @@ public class AddPrescriptionActivity extends AppCompatActivity {
 
                     for (Medication med : validMedications) {
                         long medicationId = medicationRepository.insert(med);
+
+                        String name = med.getItemName();
+                        if (name != null && !name.isEmpty()) {
+                            medicineDexRepository.insertOrUpdate(name);
+                        }
+
                         Prescription_View relation = new Prescription_View((int) prescriptionId, (int) medicationId);
                         prescription_viewRepository.insert(relation);
                     }

@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 /**
  * 약 도감 Repository
@@ -24,6 +25,7 @@ public class MedicineDexRepository {
     private final Application application;
     private final MedicineDexDao medicineDexDao;
     private final ExecutorService executorService;
+    private final MedicationDao medicationDao;
 
     public MedicineDexRepository(Application application) {
         this.application = application;
@@ -31,6 +33,7 @@ public class MedicineDexRepository {
         DB db = DB.getInstance(application);
         medicineDexDao = db.medicineDexDao();
         executorService = Executors.newSingleThreadExecutor();
+        medicationDao = db.medicationDao();
     }
 
     // ✅ 전체 도감 목록 가져오기
@@ -55,6 +58,14 @@ public class MedicineDexRepository {
     public void delete(MedicineDex dex) {
         executorService.execute(() -> medicineDexDao.delete(dex));
     }
+
+
+
+    // 수정
+    public Medication getMedicationByName(String itemName) {
+        return medicationDao.getMedicationByName(itemName);
+    }
+
 
     // ✅ 자동 추가 or 날짜 갱신 (이미 존재하면 날짜 추가)
     public void insertOrUpdate(String medicineName) {

@@ -105,4 +105,9 @@ dependencies {
 
     //androidx.security:security-crypto 라이브러리 (로그인 기능 구현을 위한 패스워드 암호화)
     implementation ("androidx.security:security-crypto:1.1.0-alpha03")
+
+    // Glide (이미지 로더 라이브러리)
+    implementation ("com.github.bumptech.glide:glide:4.15.1")
+    annotationProcessor ("com.github.bumptech.glide:compiler:4.15.1")
+
 }
