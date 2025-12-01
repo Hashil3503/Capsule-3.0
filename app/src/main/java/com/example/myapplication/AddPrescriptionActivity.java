@@ -174,6 +174,8 @@ public class AddPrescriptionActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // 현재 날짜를 기반으로 Prescription 객체 생성
 
+                v.setEnabled(false); // 연타시 처방전 중복 저장 방지를 위해 버튼 비활성화
+
                 EditText durationEditText = findViewById(R.id.editDuration); //복용 일수를 처방전에 저장하기 위해 값 가져오기
                 String durationStr = durationEditText.getText().toString().trim();
                 int duration = CommonMethod.parseInteger(durationStr);

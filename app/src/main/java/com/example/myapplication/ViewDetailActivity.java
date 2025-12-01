@@ -1,6 +1,9 @@
 package com.example.myapplication;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextWatcher;
@@ -25,7 +28,10 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.materialswitch.MaterialSwitch;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +53,8 @@ public class ViewDetailActivity extends AppCompatActivity {
     private String apiKey; //e약은요 apiKey
 
     private boolean se_existence;
+
+    ArrayList<AlarmItem> alarmList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -268,7 +276,36 @@ public class ViewDetailActivity extends AppCompatActivity {
 
                                             List<Prescription_View> remaining = prescription_viewRepository.getMedicationsForPrescription(prescriptionId);
 
-                                            if (remaining.isEmpty()) {
+                                            if (remaining.isEmpty()) { //의약품을 모두 삭제해 텅빈 처방전만 남은 경우 처방전과 알람 같이 삭제
+
+                                                // 처방전 삭제하기 전에 알람 삭제
+                                                AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+                                                if (alarmManager != null) {
+                                                    // 삭제 대상 외의 알람만 남기기 위한 리스트 생성
+                                                    ArrayList<AlarmItem> remainingAlarms = new ArrayList<>();
+
+                                                    for (AlarmItem item : alarmList) {
+                                                        if (item.getPid() == prescriptionId) { //현재 처방전 ID와 일치하는 경우만 삭제
+                                                            Intent intent = new Intent(this, AlarmReceiver.class);
+                                                            PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                                                                    this,
+                                                                    item.getRequestCode(),
+                                                                    intent,
+                                                                    PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+                                                            );
+                                                            alarmManager.cancel(pendingIntent);
+                                                        } else {
+                                                            // 삭제 대상이 아니면 새 리스트에 유지
+                                                            remainingAlarms.add(item);
+                                                        }
+                                                    }
+                                                    // 기존 alarmList를 남겨둘 알람들로 교체 alarmList.clear(); 대신 이것을 사용함.
+                                                    // 조건문에서 삭제할 알람을 지정해서 삭제 했음에도 별도로 남겨둘 알람 리스트를 사용하는 이유는 위 과정에서 삭제되는 것은 알람 리스트가 아닌 시스템 알람이기 때문.
+                                                    // 즉 실제로 동작하는 시스템 알람만 삭제되고, alarmList에서는 삭제되지 않기 때문에 별도로 alarmList를 갱신해주어야 한다.
+                                                    alarmList = remainingAlarms;
+                                                    saveAlarms(); // 저장소에도 반영
+                                                }
+                                                
                                                 prescriptionRepository.delete(prescription);
                                                 runOnUiThread(() -> {
                                                     Toast.makeText(this, "의약품이 모두 삭제되어 처방전도 삭제하였습니다!", Toast.LENGTH_SHORT).show();
@@ -287,6 +324,7 @@ public class ViewDetailActivity extends AppCompatActivity {
                                     .setNegativeButton("취소", null)
                                     .show();
                         }));
+                        loadAlarms();
 
                     }
                 }
@@ -313,7 +351,37 @@ public class ViewDetailActivity extends AppCompatActivity {
                                     if (med != null) medicationRepository.delete(med);
                                 }
 
-                                prescriptionRepository.deletePrescriptionById(prescriptionId);
+                                // 처방전 삭제하기 전에 알람 삭제
+                                AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+                                if (alarmManager != null) {
+                                    // 삭제 대상 외의 알람만 남기기 위한 리스트 생성
+                                    ArrayList<AlarmItem> remainingAlarms = new ArrayList<>();
+
+                                    for (AlarmItem item : alarmList) {
+                                        if (item.getPid() == prescriptionId) { //현재 처방전 ID와 일치하는 경우만 삭제
+                                            Intent intent = new Intent(this, AlarmReceiver.class);
+                                            PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                                                    this,
+                                                    item.getRequestCode(),
+                                                    intent,
+                                                    PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+                                            );
+                                            alarmManager.cancel(pendingIntent);
+                                        } else {
+                                            // 삭제 대상이 아니면 새 리스트에 유지
+                                            remainingAlarms.add(item);
+                                        }
+                                    }
+                                    // 기존 alarmList를 남겨둘 알람들로 교체 alarmList.clear(); 대신 이것을 사용함.
+                                    // 조건문에서 삭제할 알람을 지정해서 삭제 했음에도 별도로 남겨둘 알람 리스트를 사용하는 이유는 위 과정에서 삭제되는 것은 알람 리스트가 아닌 시스템 알람이기 때문.
+                                    // 즉 실제로 동작하는 시스템 알람만 삭제되고, alarmList에서는 삭제되지 않기 때문에 별도로 alarmList를 갱신해주어야 한다.
+                                    alarmList = remainingAlarms;
+                                    saveAlarms(); // 저장소에도 반영
+                                }
+
+                                prescriptionRepository.deletePrescriptionById(prescriptionId); // 관련 의약품, 알람 등 삭제후 처방전도 삭제
+
+
                                 runOnUiThread(() -> {
                                     Toast.makeText(this, "처방전을 삭제하였습니다!", Toast.LENGTH_SHORT).show();
                                     setResult(RESULT_OK, new Intent().putExtra("prescriptionDeleted", true));
@@ -324,6 +392,7 @@ public class ViewDetailActivity extends AppCompatActivity {
                         .setNegativeButton("취소", null)
                         .show();
             });
+            loadAlarms();
         }
     }
 
@@ -353,5 +422,23 @@ public class ViewDetailActivity extends AppCompatActivity {
 
         Log.d(TAG, "정규화된 약품명: " + name);
         return name;
+    }
+
+    private void saveAlarms() {
+        SharedPreferences prefs = getSharedPreferences("alarms", MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = gson.toJson(alarmList);
+        prefs.edit().putString("alarm_list", json).apply();
+    }
+
+    private void loadAlarms() {
+        SharedPreferences prefs = getSharedPreferences("alarms", MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = prefs.getString("alarm_list", null);
+        Type type = new TypeToken<ArrayList<AlarmItem>>() {}.getType();
+        ArrayList<AlarmItem> loaded = gson.fromJson(json, type);
+        if (loaded != null) {
+            alarmList = loaded;
+        }
     }
 }

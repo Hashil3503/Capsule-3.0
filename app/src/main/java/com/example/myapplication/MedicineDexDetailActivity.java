@@ -61,6 +61,7 @@ public class MedicineDexDetailActivity extends AppCompatActivity {
         new Thread(() -> {
             // 🔹 잠시 후에 만들 메서드: medicationRepository.getMedicationByName(medicineName);
             Medication medication = medicationDexRepository.getMedicationByName(medicineName);
+            Medication medication_api = CommonMethod.getDrugInfo(apiKey, medicineName);
             String url = CommonMethod.getDrugImageUrl(apiKey, medicineName);
 
             runOnUiThread(() -> {
@@ -101,9 +102,11 @@ public class MedicineDexDetailActivity extends AppCompatActivity {
                     ivImage.setImageResource(R.drawable.ic_pill);
 
                 } else {
-                    tvEffect.setText("해당 약에 대한 상세 정보를 찾을 수 없습니다.");
-                    tvSideEffect.setText("");
-                    tvCaution.setText("");
+                    tvEffect.setText(medication_api.getEfcyQesitm());
+                    tvSideEffect.setText(medication_api.getSeQesitm());
+                    String cautionText = "";
+                    cautionText += medication_api.getAtpnWarnQesitm() + "\n" + medication_api.getAtpnQesitm();
+                    tvCaution.setText(cautionText);
                 }
                 if (url != null && !url.isEmpty()) {
                     Glide.with(MedicineDexDetailActivity.this)

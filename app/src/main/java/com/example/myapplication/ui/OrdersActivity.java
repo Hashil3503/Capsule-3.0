@@ -25,8 +25,6 @@ public class OrdersActivity extends AppCompatActivity {
         setContentView(R.layout.activity_orders);
         tvBal = findViewById(R.id.tvOrdersBalance);
         lv    = findViewById(R.id.lvOrders);
-        Button back = findViewById(R.id.btnBackToShop);
-        back.setOnClickListener(v -> finish());
         refresh();
     }
 
