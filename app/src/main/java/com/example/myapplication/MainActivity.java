@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
 
         medicineNameRepository = new MedicineNameRepository(getApplication());
 
-        if (!LoginManager.isLoggedIn()) { //로그인 되었는지 확인
+        if (!LoginManager.isLoggedIn(this)) { //로그인 되었는지 확인
             showPasswordDialog();
         }
 
@@ -392,7 +392,7 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 // 기존 비밀번호 검증
                 if (helper.checkPassword(pwInput)) {
-                    LoginManager.login(); // 로그인 여부 저장
+                    LoginManager.login(this); // 로그인 여부 저장
                     dialog.dismiss();
                 } else {
                     textWarning.setText("비밀번호가 틀렸습니다.");

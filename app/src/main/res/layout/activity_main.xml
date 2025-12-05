@@ -218,7 +218,7 @@
                 <ImageView
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/genechatbot"
+                    android:src="@drawable/chatbot"
                     android:contentDescription="@string/btn_graph" />
             </LinearLayout>
 
@@ -246,7 +246,7 @@
                 <ImageView
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/alarmhome"
+                    android:src="@drawable/alarmlist"
                     android:contentDescription="@string/btn_all_alarm_list" />
             </LinearLayout>
         </LinearLayout>
@@ -316,7 +316,7 @@
                 <ImageView
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/alarmhome"
+                    android:src="@drawable/ic_dic"
                     android:contentDescription="@string/btn_all_alarm_list" />
             </LinearLayout>
 
