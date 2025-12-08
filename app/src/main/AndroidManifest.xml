@@ -48,6 +48,9 @@
             android:name=".AlarmForegroundService"
             android:exported="false"
             android:foregroundServiceType="dataSync" />
+        <service
+            android:name=".AppTaskService"
+            android:stopWithTask="false"/>
         <activity
             android:name=".AllAlarmListActivity"
             android:exported="false" />

@@ -62,14 +62,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        startService(new Intent(this, AppTaskService.class)); //자동 로그아웃 서비스 시작
+
         // DatabaseHelper 초기화
         dbHelper = DatabaseHelper.getInstance(getApplicationContext());
 
         medicineNameRepository = new MedicineNameRepository(getApplication());
-
-        if (!LoginManager.isLoggedIn(this)) { //로그인 되었는지 확인
-            showPasswordDialog();
-        }
 
         DBOK = false;
 
@@ -194,6 +192,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         refreshBalance();
+
+        if (!LoginManager.isLoggedIn(this)) { //로그인 되었는지 확인
+            showPasswordDialog();
+        }
     }
 
     @Override

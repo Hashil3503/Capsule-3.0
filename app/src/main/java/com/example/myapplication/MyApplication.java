@@ -36,4 +36,5 @@ public class MyApplication extends Application implements LifecycleObserver {
     public void onAppBackgrounded() {
         LoginManager.logout(this); // ✅ 여기서 자동 로그아웃
     }
+
 }
