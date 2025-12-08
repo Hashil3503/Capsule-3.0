@@ -53,13 +53,13 @@
 
 개발 도구 : Android Studio
 
-언어 : JAVA, Python
+언어 : JAVA
 
 DBMS : SQLite
 
 라이브러리 : Room, Caemera X, OKHttp, OpenCSV 등
 
-API : ML Kit, Fast API, e약은요, gpt-4o-mini
+API : ML Kit, Fast API, e약은요, OpenAI API(gpt-4o-mini)
 
 
 ---------------------------------------------------------------------
