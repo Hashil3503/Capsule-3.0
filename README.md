@@ -56,8 +56,10 @@
 
 
 ◯ 복약 알람 자동 설정
+<img width="1029" height="440" alt="{CA1CF7B1-4FA1-41C3-8581-E915D4A5D74F}" src="https://github.com/user-attachments/assets/1511ff1d-ce9a-4f12-b0b7-f1045b765d1a" />
 
 ◯ 챗봇 & 약품 도감
+<img width="612" height="448" alt="{2D168061-9066-4905-82BF-C2500D5A953C}" src="https://github.com/user-attachments/assets/ea4a07e0-c172-4368-90e7-9cc3aebaf139" />
 
 
 
