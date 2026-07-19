@@ -44,7 +44,7 @@
 실행 화면
 ◯ 로그인 화면
 
-ㄴ<img width="747" height="530" alt="{88D4BF0E-A619-45B0-BE67-0E6D2B19084F}" src="https://github.com/user-attachments/assets/6316676a-f20b-4f74-b8c2-2fef234199eb" />
+<img width="747" height="530" alt="{88D4BF0E-A619-45B0-BE67-0E6D2B19084F}" src="https://github.com/user-attachments/assets/6316676a-f20b-4f74-b8c2-2fef234199eb" />
 
 ◯ 메인화면 - 설정(톱니바퀴 버튼) - 기본 알람 시간대 설정
 
