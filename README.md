@@ -41,6 +41,26 @@
 
 [결과 및 기대 효과]
 
+실행 화면
+◯ 로그인 화면
+ㄴ<img width="747" height="530" alt="{88D4BF0E-A619-45B0-BE67-0E6D2B19084F}" src="https://github.com/user-attachments/assets/6316676a-f20b-4f74-b8c2-2fef234199eb" />
+
+◯ 메인화면 - 설정(톱니바퀴 버튼) - 기본 알람 시간대 설정
+<img width="707" height="517" alt="{59CB8CD6-CB1D-4448-BEF4-7FC0A635BBFB}" src="https://github.com/user-attachments/assets/b48baf22-a2c9-4848-9788-733dd6e82dff" />
+
+◯ 처방전 인식 & 처방전 조회
+<img width="696" height="494" alt="{A0300540-1B10-481C-A0F0-7C1B39E7C3CB}" src="https://github.com/user-attachments/assets/91300bfd-94d8-4d40-a918-0f81d7378992" />
+
+
+<img width="698" height="492" alt="{473671C4-7D47-44C6-AE23-193CF4A055AC}" src="https://github.com/user-attachments/assets/9102c261-72ae-4b3d-8382-ebe0dedea257" />
+
+
+◯ 복약 알람 자동 설정
+
+◯ 챗봇 & 약품 도감
+
+
+
 - 기존의 부족한 약품 정보 문제를 "e약은요" api를 통해 보완
 - 리워드 기능을 통한 복약 준수 동기 부여
 - 약품 도감 기능을 통해 처방전 삭제 이후에도 약품 정보를 지속적으로 조회 가능
