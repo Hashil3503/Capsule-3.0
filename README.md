@@ -14,7 +14,7 @@
 
 프로젝트 목표 : 기존 프로젝트 개선
 
-진행 기간 : 2025.09.02 ~ 2025.12.1
+진행 기간 : 2025.10.7 ~ 2025.12.1
 
 참여 인원: 김명환, 손준영, 김도은, 김명진
 
@@ -57,9 +57,9 @@
 
 DBMS : SQLite
 
-라이브러리 : Room, Caemera X, OKHttp, OpenCSV 등
+라이브러리 : Room, Caemera X, OKHttp, Rrtrofit, OpenCSV, Security-Crypto, Glide
 
-API : ML Kit, Fast API, e약은요, OpenAI API(gpt-4o-mini)
+API : ML Kit, e약은요, OpenAI API(gpt-4o-mini)
 
 
 ---------------------------------------------------------------------
