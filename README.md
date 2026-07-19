@@ -41,7 +41,6 @@
 
 [결과 및 기대 효과]
 
-실행 화면
 ◯ 로그인 화면
 
 <img width="747" height="530" alt="{88D4BF0E-A619-45B0-BE67-0E6D2B19084F}" src="https://github.com/user-attachments/assets/6316676a-f20b-4f74-b8c2-2fef234199eb" />
