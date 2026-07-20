@@ -17,6 +17,14 @@ public class ChatRequest {
                 ));
     }
 
+    public ChatRequest(String model, List<Message> messages, String systemPrompt) {
+        this.model = model;
+        this.messages = messages;
+        if (systemPrompt != null && !systemPrompt.isEmpty()) {
+            messages.add(new ChatRequest.Message("system", systemPrompt));
+        }
+    }
+
     public static class Message {
         private String role;
         private String content;
