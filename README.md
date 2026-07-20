@@ -14,7 +14,7 @@
 
 프로젝트 목표 : 기존 프로젝트 개선
 
-진행 기간 : 2025.10.7 ~ 2025.12.1
+진행 기간 : 2025.9.16 ~ 2025.12.1
 
 참여 인원: 김명환, 손준영, 김도은, 김명진
 
@@ -40,6 +40,32 @@
 - 자동 알람 설정 기능 구현
 
 [결과 및 기대 효과]
+
+◯ 로그인 화면
+
+<img width="747" height="530" alt="{88D4BF0E-A619-45B0-BE67-0E6D2B19084F}" src="https://github.com/user-attachments/assets/6316676a-f20b-4f74-b8c2-2fef234199eb" />
+
+◯ 메인화면 - 설정(톱니바퀴 버튼) - 기본 알람 시간대 설정
+
+<img width="707" height="517" alt="{59CB8CD6-CB1D-4448-BEF4-7FC0A635BBFB}" src="https://github.com/user-attachments/assets/b48baf22-a2c9-4848-9788-733dd6e82dff" />
+
+◯ 처방전 인식 & 처방전 조회
+
+<img width="696" height="494" alt="{A0300540-1B10-481C-A0F0-7C1B39E7C3CB}" src="https://github.com/user-attachments/assets/91300bfd-94d8-4d40-a918-0f81d7378992" />
+
+
+<img width="698" height="492" alt="{473671C4-7D47-44C6-AE23-193CF4A055AC}" src="https://github.com/user-attachments/assets/9102c261-72ae-4b3d-8382-ebe0dedea257" />
+
+
+◯ 복약 알람 자동 설정
+
+<img width="1029" height="440" alt="{CA1CF7B1-4FA1-41C3-8581-E915D4A5D74F}" src="https://github.com/user-attachments/assets/1511ff1d-ce9a-4f12-b0b7-f1045b765d1a" />
+
+◯ 챗봇 & 약품 도감
+
+<img width="612" height="448" alt="{2D168061-9066-4905-82BF-C2500D5A953C}" src="https://github.com/user-attachments/assets/ea4a07e0-c172-4368-90e7-9cc3aebaf139" />
+
+
 
 - 기존의 부족한 약품 정보 문제를 "e약은요" api를 통해 보완
 - 리워드 기능을 통한 복약 준수 동기 부여
